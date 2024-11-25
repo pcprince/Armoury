@@ -1,0 +1,13 @@
+.gun-type-button {
+    min-width: 130px;
+}
+
+.gun-make-button {
+    min-width: 160px;
+}
+
+.centered-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

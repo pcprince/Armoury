@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Rock Armoury</title>
+    <link href="index.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="container-fluid">
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col" style="text-align: center;">
+                <button id="reset-button" class="btn btn-danger">Reset</button>
+            </div>
+        </div>
+
+        <!-- Information -->
+
+        <div class="row" style="margin-top: 15px; min-height: 24px;">
+            <div class="col" style="text-align: center;">
+                <span id="name-span" style="font-size: xx-large;">New Gun</span>
+                <!-- TODO: Renaming -->
+                <!-- <img src="./images/pencil-square.svg"> -->
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 2px;">
+            <div class="col" style="text-align: center;">
+                <span id="price-span">0</span>g
+            </div>
+        </div>
+
+        <hr>
+
+        <div id="basic-selection-div">
+
+            <!-- Make information -->
+
+            <div class="centered-container">
+
+                <div class="card" style="width: 30%;">
+    
+                    <h5 class="card-header" id="make-name-text" style="min-height: 42px;">Select a gun make</h5>
+    
+                    <div class="card-body" style="display: none;" id="main-make-info">
+                        <h5 class="card-title" id="design-ethos-text"></h5>
+                        <p class="card-text" id="history-text"></p>
+                    </div>
+    
+                    <div class="card-body" style="display: none;" id="make-trait-info">
+                        <h5 class="card-title" id="make-trait-name-text"></h5>
+                        <p class="card-text" id="make-trait-text"></p>
+                    </div>
+    
+                </div>
+
+            </div>
+
+            <!-- Make selection -->
+
+            <div class="row" style="margin-top: 15px;">
+                <div class="col" style="text-align: center;">
+                    <button class="btn btn-primary gun-make-button">Ashforge</button>
+                    <button class="btn btn-primary gun-make-button">Gaxit</button>
+                    <button class="btn btn-primary gun-make-button">Holdinger</button>
+                    <button class="btn btn-primary gun-make-button">Leander-Sherridan</button>
+                    <button class="btn btn-primary gun-make-button">Irvine</button>
+                    <button class="btn btn-primary gun-make-button">Quicksilver</button>
+                    <button class="btn btn-primary gun-make-button">Kammaren</button>
+                    <button class="btn btn-primary gun-make-button">Valenzio</button>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 2px;">
+                <div class="col" style="text-align: center;">
+                    <button class="btn btn-primary gun-make-button">Bursat</button>
+                    <button class="btn btn-primary gun-make-button">Faljuq</button>
+                    <button class="btn btn-primary gun-make-button">Valmoran</button>
+                    <button class="btn btn-primary gun-make-button">Carron</button>
+                    <button class="btn btn-primary gun-make-button">Tesiphon</button>
+                    <button class="btn btn-primary gun-make-button">Olympia</button>
+                    <button class="btn btn-primary gun-make-button">Salcorin Bespoke</button>
+                    <button class="btn btn-primary gun-make-button">Ironcoil</button>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Gun type selection -->
+
+            <div class="row justify-content-center" style="margin-top: 2px;">
+                <div class="col-auto text-center">
+                    <button class="btn btn-secondary gun-type-button" disabled>Revolver</button>
+                    <div class="gun-price-text">0</div>
+                </div>
+                <div class="col-auto text-center">
+                    <button class="btn btn-secondary gun-type-button" disabled>Holdout Pistol</button>
+                    <div class="gun-price-text">0</div>
+                </div>
+                <div class="col-auto text-center">
+                    <button class="btn btn-secondary gun-type-button" disabled>Cavalry Pistol</button>
+                    <div class="gun-price-text">0</div>
+                </div>
+                <div class="col-auto text-center">
+                    <button class="btn btn-secondary gun-type-button" disabled>Rifle</button>
+                    <div class="gun-price-text">0</div>
+                </div>
+                <div class="col-auto text-center">
+                    <button class="btn btn-secondary gun-type-button" disabled>Carbine</button>
+                    <div class="gun-price-text">0</div>
+                </div>
+                <div class="col-auto text-center">
+                    <button class="btn btn-secondary gun-type-button" disabled>Shotgun</button>
+                    <div class="gun-price-text">0</div>
+                </div>
+                <div class="col-auto text-center">
+                    <button class="btn btn-secondary gun-type-button" disabled>Hunting Rifle</button>
+                    <div class="gun-price-text">0</div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Next step button -->
+
+            <div class="row" style="margin-top: 10px;">
+                <div class="col" style="text-align: center;">
+                    <button class="btn btn-success" id="select-masterworks-button" disabled>Select Masterworks</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="masterwork-selection-div">
+
+        </div>
+
+    </div>
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+<script src="js/price.js"></script>
+<script src="js/basicSelection.js"></script>
+<script src="js/masterworkSelection.js"></script>
+<script src="js/index.js"></script>
+
+</html>
