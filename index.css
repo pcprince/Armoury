@@ -11,3 +11,7 @@
     align-items: center;
     justify-content: center;
 }
+
+.add-button, .remove-button {
+    min-width: 67px;
+}

@@ -3,7 +3,7 @@
  * November 2024
  *****************************************************************************/
 
-/* global updatePrice */
+/* global setBasePrice, resetBasePrice */
 
 const nameSpan = document.getElementById('name-span');
 
@@ -29,7 +29,7 @@ const supportedMakes = [
     [false, false, false, true, true, false, true], // Leander-Sheriden
     [false, false, false, true, true, false, true], // Irvine
     [true, true, false, false, false, false, false], // Quicksilver
-    [true, false, true, true, false, false, false], // Kammanen
+    [true, false, true, true, false, false, false], // Kammaren
     [true, false, true, false, false, true, false], // Valenzio
     [false, false, false, true, false, true, false], // Bursat
     [true, true, false, false, false, true, false], // Falluq
@@ -74,7 +74,7 @@ const makeInformation = [
     {
         name: 'Leander-Sherriden',
         designEthos: 'Increase the number of shots fired.',
-        history: 'Leander-Sherriden Repeating Arms Company: Great things were expected from the merger of the Athean based Sherriden and the and Uprelan based Leander and the The Trans-Arlaghian company certainly delivers. The two expert gunsmiths have produced guns that can sing in the hands of a skilled marksman.',
+        history: 'Leander-Sherriden Repeating Arms Company: Great things were expected from the merger of the Athean based Sherriden and the Uprelan based Leander and The Trans-Arlaghian company certainly delivers. The two expert gunsmiths have produced guns that can sing in the hands of a skilled marksman.',
         makeTrait: {
             name: 'Bullet In the Chamber',
             description: 'You can make a single attack as part of a reload action.'
@@ -99,7 +99,7 @@ const makeInformation = [
         }
     },
     {
-        name: 'Kammanen',
+        name: 'Kammaren',
         designEthos: 'Make a gun for all ranges.',
         history: 'Kammaren Armory: When the battery at Kammaren exchanged fire with the Mordvinian army for four straight months, solutions were needed to make up for waning powder supplies .The result is Kammaren Armory\'s lasting reputation for guns which are suitable for all occasions.',
         makeTrait: {
@@ -205,6 +205,12 @@ function getSelectedGunTypeIndex () {
 
 }
 
+function getSelectedGunMakeName () {
+
+    return makeInformation[selectedGunMakeIndex].name;
+
+}
+
 function resetBasicSelection () {
 
     selectedGunMakeIndex = -1;
@@ -220,7 +226,7 @@ function resetBasicSelection () {
 
     // Update price display
 
-    updatePrice(0);
+    resetBasePrice();
 
     // Update basic name
 
@@ -319,7 +325,7 @@ for (let i = 0; i < gunMakeButtons.length; i++) {
 
         // Update price display
 
-        updatePrice(0);
+        resetBasePrice();
 
         // Update basic name
 
@@ -391,7 +397,7 @@ for (let i = 0; i < gunTypeButtons.length; i++) {
 
         // Animate price display
 
-        updatePrice(selectedGunTypeIndex === -1 ? 0 : gunPrices[i]);
+        setBasePrice(selectedGunTypeIndex === -1 ? 0 : gunPrices[i]);
 
         // Colour selected gun type green
 

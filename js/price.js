@@ -5,6 +5,24 @@
 
 /* global requestAnimationFrame */
 
+let basePrice = 0;
+let masterworkTotalPrice = 0;
+let currentPrice = 0;
+
+function resetPrice () {
+
+    basePrice = 0;
+    masterworkTotalPrice = 0;
+    currentPrice = 0;
+
+}
+
+function getCurrentPrice () {
+
+    return currentPrice;
+
+}
+
 class NumberAnimator {
 
     constructor (element, duration = 1000) {
@@ -70,8 +88,38 @@ class NumberAnimator {
 const priceSpan = document.getElementById('price-span');
 const animator = new NumberAnimator(priceSpan, 500);
 
-function updatePrice (newPrice) {
+function updateTotalPrice () {
 
-    animator.animateTo(newPrice);
+    currentPrice = basePrice + masterworkTotalPrice;
+
+    animator.animateTo(currentPrice);
+
+}
+
+function setBasePrice (newBasePrice) {
+
+    basePrice = newBasePrice;
+
+    updateTotalPrice();
+
+}
+
+function resetBasePrice () {
+
+    setBasePrice(0);
+
+}
+
+function setMasterworkTotalPrice (newMasterworkTotalPrice) {
+
+    masterworkTotalPrice = newMasterworkTotalPrice;
+
+    updateTotalPrice();
+
+}
+
+function resetMasterworkTotalPrice () {
+
+    setMasterworkTotalPrice(0);
 
 }
