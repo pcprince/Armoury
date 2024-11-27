@@ -3,7 +3,7 @@
  * November 2024
  *****************************************************************************/
 
-/* global getSelectedGunMakeName, getMasterworksByMaker, getStandardisedPartsMasterworks, setMasterworkTotalPrice */
+/* global enableNameInput, getSelectedGunMakeName, getMasterworksByMaker, getStandardisedPartsMasterworks, setMasterworkTotalPrice, showOverviewCard, updateOverviewCard */
 
 const selectMasterworksButton = document.getElementById('select-masterworks-button');
 
@@ -14,8 +14,11 @@ const masterworkContainer = document.getElementById('masterwork-container');
 const masterworkSelectionContainer = document.getElementById('masterwork-selection-container');
 const standardisedPartsContainer = document.getElementById('standardised-parts-container');
 
+let cards = [];
+
 let possibleMasterworks = [];
 let masterworkSelection = [];
+let masterworkPriceStrings = [];
 
 class Masterwork {
 
@@ -29,7 +32,7 @@ class Masterwork {
 }
 
 const CHEAPER_CUSTOMISATION = new Masterwork(1, -1);
-const STANDARDISED_PARTS = new Masterwork(1, 2);
+const STANDARDISED_PARTS_PICK = new Masterwork(2, 2);
 const GENERIC_MASTERWORK = new Masterwork(1, 1);
 
 function calculateMasterworkCost (masterworkList) {
@@ -39,7 +42,13 @@ function calculateMasterworkCost (masterworkList) {
 
     for (let i = 0; i < masterworkList.length; i++) {
 
-        const masterwork = masterworkList[i].name === 'Cheaper Customisation' ? CHEAPER_CUSTOMISATION : (masterworkList[i].name === 'Standardised Parts' ? STANDARDISED_PARTS : GENERIC_MASTERWORK);
+        let masterwork = masterworkList[i].name === 'Cheaper Customisation' ? CHEAPER_CUSTOMISATION : GENERIC_MASTERWORK;
+
+        if (i > 0) {
+
+            masterwork = masterworkList[i - 1].name === 'Standardised Parts' ? STANDARDISED_PARTS_PICK : GENERIC_MASTERWORK;
+
+        }
 
         totalCost += 1000 * Math.pow(2, effectivePosition) * masterwork.priceMultiplier;
         effectivePosition += masterwork.positionIncrement;
@@ -61,6 +70,7 @@ function updateMasterworkCost () {
 function resetMasterworkSelection () {
 
     masterworkSelection = [];
+    masterworkPriceStrings = [];
 
     updateSelectedMasterworkDisplay();
 
@@ -77,6 +87,51 @@ function fillRowWithPlaceholders (row, count) {
         const placeholder = document.createElement('div');
         placeholder.className = 'col';
         row.appendChild(placeholder);
+
+    }
+
+}
+
+function checkforPlusX (position, card) {
+
+    const cardTitle = card.querySelector('.card-header');
+    const name = cardTitle.innerText;
+
+    if (!name.includes('Accurate +X') && !name.includes('Specialisation +X')) {
+
+        return;
+
+    }
+
+    let currentAccuracyBonus = 0;
+    let currentSpecialisationBonus = 0;
+
+    for (let i = 0; i < position; i++) {
+
+        const masterwork = masterworkSelection[i];
+
+        if (masterwork.name === 'Accurate +X') {
+
+            currentAccuracyBonus++;
+
+        } else if (masterwork.name === 'Specialisation +X') {
+
+            currentSpecialisationBonus++;
+
+        }
+
+    }
+
+    if (name.includes('Accurate +X')) {
+
+        // All guns start with +1
+        const newAccuracyBonus = currentAccuracyBonus + 2;
+        cardTitle.innerText = 'Accurate +' + newAccuracyBonus;
+
+    } else if (name.includes('Specialisation +X')) {
+
+        const newSpecialisationBonus = currentSpecialisationBonus + 1;
+        cardTitle.innerText = 'Specialisation +' + newSpecialisationBonus;
 
     }
 
@@ -103,8 +158,16 @@ function updateSelectedMasterworkDisplay () {
         // Build card
 
         const card = buildCard(masterworkSelection[i], true);
+
+        // Add '(+current bonus)' to title if masterwork is Accurate +X or Specialisation +X
+
+        checkforPlusX(i, card);
+
         const removeButton = card.querySelector('.remove-button');
         removeButton.disabled = i !== masterworkSelection.length - 1;
+
+        const priceElement = card.querySelector('.price');
+        priceElement.innerText = masterworkPriceStrings[i];
 
         col.appendChild(card);
 
@@ -124,21 +187,27 @@ function updateSelectedMasterworkDisplay () {
 
 }
 
-function addMasterwork (m) {
+function addMasterwork (m, currentPriceString) {
 
     console.log('Adding:', m);
 
     masterworkSelection.push(m);
+    masterworkPriceStrings.push(currentPriceString);
 
     updateSelectedMasterworkDisplay();
 
     updateMasterworkCost();
+
+    updateAddButtons();
+
+    updateOverviewCard(masterworkSelection);
 
 }
 
 function removeLatestMasterwork () {
 
     const m = masterworkSelection.pop();
+    masterworkPriceStrings.pop();
 
     console.log('Removing:', m);
 
@@ -154,11 +223,13 @@ function removeLatestMasterwork () {
 
     }
 
-    if (masterworkSelection[masterworkSelection.length - 1].name === 'Standardised Parts') {
+    if (masterworkSelection.length > 0 && masterworkSelection[masterworkSelection.length - 1].name === 'Standardised Parts') {
 
         enableStandardisedParts();
 
     }
+
+    updateAddButtons();
 
 }
 
@@ -189,10 +260,8 @@ function buildCard (masterwork, selected) {
     cardHeader.className = 'card-header';
     cardHeader.textContent = masterwork.name;
 
-    // TODO: If masterwork has '+X' in the name, append (+number)
-
     const cardBody = document.createElement('div');
-    cardBody.className = 'card-body';
+    cardBody.className = 'card-body small';
 
     const descriptionText = document.createElement('p');
     descriptionText.className = 'card-text';
@@ -215,9 +284,15 @@ function buildCard (masterwork, selected) {
 
     const cardFooter = document.createElement('div');
 
-    if (selected) {
+    cardFooter.className = 'card-footer d-flex justify-content-between align-items-center';
 
-        cardFooter.className = 'card-footer d-flex justify-content-end';
+    const price = document.createElement('span');
+    price.className = 'text-muted price';
+    price.textContent = '0g';
+
+    cardFooter.appendChild(price);
+
+    if (selected) {
 
         const removeButton = document.createElement('button');
         removeButton.className = 'btn btn-danger btn-sm remove-button';
@@ -227,17 +302,10 @@ function buildCard (masterwork, selected) {
 
     } else {
 
-        cardFooter.className = 'card-footer d-flex justify-content-between align-items-center';
-
-        const price = document.createElement('span');
-        price.className = 'text-muted price';
-        price.textContent = '0g';
-
         const addButton = document.createElement('button');
         addButton.className = 'btn btn-success btn-sm add-button';
         addButton.textContent = 'Add';
 
-        cardFooter.appendChild(price);
         cardFooter.appendChild(addButton);
 
     }
@@ -303,6 +371,7 @@ function enableStandardisedParts () {
         col.className = 'col';
 
         const card = buildCard(standardisedMasterworks[i], false);
+
         const addButton = card.querySelector('.add-button');
 
         col.appendChild(card);
@@ -313,7 +382,9 @@ function enableStandardisedParts () {
 
         addButton.addEventListener('click', () => {
 
-            addMasterwork(standardisedMasterworks[i]);
+            const priceElement = card.querySelector('.price');
+
+            addMasterwork(standardisedMasterworks[i], priceElement.innerText);
 
             disableStandardisedParts();
 
@@ -363,16 +434,78 @@ function disableStandardisedParts () {
 
 }
 
-selectMasterworksButton.addEventListener('click', () => {
+function updateAddButtons () {
 
-    masterworkSelection = [];
+    for (let i = 0; i < cards.length; i++) {
+
+        const cardTitle = cards[i].querySelector('.card-header');
+        const name = cardTitle.innerText;
+
+        // Count how many times 'Accurate +X' and 'Specialisation +X' have been chosen
+
+        let accurateCount = 0;
+        let specialisationCount = 0;
+
+        let alreadySelected = false;
+
+        for (let j = 0; j < masterworkSelection.length; j++) {
+
+            accurateCount += masterworkSelection[j].name === 'Accurate +X' ? 1 : 0;
+            specialisationCount += masterworkSelection[j].name === 'Specialisation +X' ? 1 : 0;
+
+            if (masterworkSelection[j].name === name) {
+
+                alreadySelected = true;
+
+            }
+
+        }
+
+        const addButton = cards[i].querySelector('.add-button');
+
+        if (name === 'Accurate +X') {
+
+            if (accurateCount >= 5) {
+
+                addButton.disabled = true;
+
+            }
+
+        } else if (name === 'Specialisation +X') {
+
+            if (specialisationCount >= 5) {
+
+                addButton.disabled = true;
+
+            }
+
+        } else if (alreadySelected) {
+
+            addButton.disabled = true;
+
+        } else {
+
+            addButton.disabled = false;
+
+        }
+
+    }
+
+}
+
+selectMasterworksButton.addEventListener('click', () => {
 
     basicSelectionDiv.style.display = 'none';
     masterworkSelectionDiv.style.display = '';
 
-    // Populate masterworks
+    enableNameInput();
 
     masterworkContainer.innerHTML = '';
+
+    masterworkSelection = [];
+
+    showOverviewCard();
+    updateOverviewCard(masterworkSelection);
 
     const generalMasterworks = getMasterworksByMaker('General');
 
@@ -382,6 +515,8 @@ selectMasterworksButton.addEventListener('click', () => {
     possibleMasterworks = [...generalMasterworks, ...limitedMasterworks];
 
     let currentRow = null;
+
+    cards = [];
 
     for (let i = 0; i < possibleMasterworks.length; i++) {
 
@@ -397,6 +532,9 @@ selectMasterworksButton.addEventListener('click', () => {
         col.className = 'col';
 
         const card = buildCard(possibleMasterworks[i], false);
+
+        cards.push(card);
+
         const addButton = card.querySelector('.add-button');
 
         col.appendChild(card);
@@ -407,13 +545,9 @@ selectMasterworksButton.addEventListener('click', () => {
 
         addButton.addEventListener('click', () => {
 
-            addMasterwork(possibleMasterworks[i]);
+            const priceElement = card.querySelector('.price');
 
-            if (possibleMasterworks[i].name !== 'Accurate +X' && possibleMasterworks[i].name !== 'Specialisation +X') {
-
-                addButton.disabled = true;
-
-            }
+            addMasterwork(possibleMasterworks[i], priceElement.innerText);
 
             updatePrices();
 
@@ -426,6 +560,8 @@ selectMasterworksButton.addEventListener('click', () => {
         });
 
     }
+
+    updateAddButtons();
 
     updatePrices();
 

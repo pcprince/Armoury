@@ -6,7 +6,7 @@
 const masterworks = [
     {
         'name': 'Accurate +X',
-        'description': 'Confers +X to hit, this can be taken up to 5 times.',
+        'description': 'Confers +X to hit, this can be taken up to 5 times. All guns start with Accurate +1.',
         'kicker': '',
         'maker': 'General',
         'complexity': 'Basic'

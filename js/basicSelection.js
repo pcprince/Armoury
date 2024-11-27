@@ -5,7 +5,7 @@
 
 /* global setBasePrice, resetBasePrice */
 
-const nameSpan = document.getElementById('name-span');
+const nameInput = document.getElementById('name-input');
 
 const gunTypeButtons = document.getElementsByClassName('gun-type-button');
 const gunMakeButtons = document.getElementsByClassName('gun-make-button');
@@ -20,6 +20,21 @@ const makeTraitNameText = document.getElementById('make-trait-name-text');
 const makeTraitText = document.getElementById('make-trait-text');
 const mainMakeInfo = document.getElementById('main-make-info');
 const makeTraitInfo = document.getElementById('make-trait-info');
+
+// Type information card elements
+const typeNameText = document.getElementById('type-name-text');
+const typeCaliberText = document.getElementById('type-caliber-text');
+const typeRangeText = document.getElementById('type-range-text');
+const typeMisfireText = document.getElementById('type-misfire-text');
+const typeCapacityText = document.getElementById('type-capacity-text');
+const typeDurabilityText = document.getElementById('type-durability-text');
+const typeWeightText = document.getElementById('type-weight-text');
+
+const typeAttackBonusText = document.getElementById('type-attack-bonus-text');
+const typeDamageText = document.getElementById('type-damage-text');
+const typeKeywordsText = document.getElementById('type-keywords-text');
+
+const mainTypeInfo = document.getElementById('main-type-info');
 
 const supportedMakes = [
     // Revolver, Holdout Pistol, Cavalry Pistol, Rifle, Carbine, Shotgun, Hunting Rifle
@@ -146,7 +161,7 @@ const makeInformation = [
     {
         name: 'Carron',
         designEthos: 'Multiple barrelled weapons which are a combination of features of each base model.',
-        history: 'Carron Volleyguns are of strange but well tested design, with multiple barrels in place of complex internal magazine space. Mostly employed by game hunters, they provide a source of firepower which is reliable in it\'s simplicity, albeit a little slow to reload.',
+        history: 'Carron Volleyguns are of strange but well tested design, with multiple barrels in place of complex internal magazine space. Mostly employed by game hunters, they provide a source of firepower which is reliable in it\'s simplicity, a lbeit a little slow to reload.',
         makeTrait: {
             name: 'Combination Weapons',
             description: 'Combination Weapons: Any two weapon models (including the same kind twice) are combined, paying the price of both. When you make an attack with this weapon you may fire all barrels as part of the attack. An attack made this way is made with disadvantage (this cannot be removed in any way) and all component weapons must be in range. Additionally when fired this way the weapon can only misfire or critical hit when all dice roll 1 or 20 respectively. Combination Weapons inherit all weapon keywords, have -1 capacity on each component weapon (to minimum of 1) and may only be reloaded outside of combat.'
@@ -190,8 +205,121 @@ const makeInformation = [
     }
 ];
 
+const typeInformation = [
+    {
+        'name': 'Revolver',
+        'caliber': '4',
+        'shortRange': '60',
+        'longRange': '240',
+        'misfire': 1,
+        'bulletCapacity': 6,
+        'durability': 20,
+        'keywords': 'Accurate 1, Hipfire',
+        'cost': 450,
+        'weight': '2.5lb'
+    },
+    {
+        'name': 'Holdout Pistol',
+        'caliber': '3',
+        'shortRange': '60',
+        'longRange': '240',
+        'misfire': 1,
+        'bulletCapacity': 2,
+        'durability': 10,
+        'keywords': 'Accurate 1, Light, Hipfire',
+        'cost': 200,
+        'weight': '1lb'
+    },
+    {
+        'name': 'Cavalry Pistol',
+        'caliber': '4',
+        'shortRange': '50',
+        'longRange': '200',
+        'misfire': 1,
+        'bulletCapacity': 8,
+        'durability': 20,
+        'keywords': 'Accurate 1, Hipfire, Equestrian',
+        'cost': 500,
+        'weight': '3lb'
+    },
+    {
+        'name': 'Rifle',
+        'caliber': '5',
+        'shortRange': '120',
+        'longRange': '480',
+        'misfire': 2,
+        'bulletCapacity': 12,
+        'durability': 20,
+        'keywords': 'Accurate 1, Steady, 2-handed',
+        'cost': 900,
+        'weight': '12lb'
+    },
+    {
+        'name': 'Carbine',
+        'caliber': '5',
+        'shortRange': '100',
+        'longRange': '400',
+        'misfire': 2,
+        'bulletCapacity': 7,
+        'durability': 20,
+        'keywords': 'Accurate 1, Steady, Equestrian, 2-handed',
+        'cost': 1000,
+        'weight': '10lb'
+    },
+    {
+        'name': 'Shotgun Slug (Shot)',
+        'caliber': '6(5)',
+        'shortRange': '10/40',
+        'longRange': '40/120',
+        'misfire': 3,
+        'bulletCapacity': 2,
+        'durability': 20,
+        'keywords': 'Accurate 1, (Spread), 2-handed',
+        'cost': 800,
+        'weight': '6.5lb'
+    },
+    {
+        'name': 'Hunting Rifle',
+        'caliber': '6',
+        'shortRange': '200',
+        'longRange': '800',
+        'misfire': 2,
+        'bulletCapacity': 1,
+        'durability': 20,
+        'keywords': 'Accurate 1, Steady, Bulky, 2-handed',
+        'cost': 750,
+        'weight': '8lb'
+    }
+];
+
+const caliberDice = ['1d6', '1d8', '1d10', '1d12', '2d8', '2d10', '2d12', '3d8', '3d10'];
+
 let selectedGunTypeIndex = -1;
 let selectedGunMakeIndex = -1;
+
+function enableNameInput () {
+
+    nameInput.classList.remove('disabled-name-input');
+    nameInput.disabled = false;
+
+}
+
+function disableNameInput () {
+
+    nameInput.classList.add('disabled-name-input');
+    nameInput.disabled = true;
+
+}
+
+nameInput.addEventListener('blur', () => {
+
+    if (nameInput.value === '') {
+
+        updateGunName();
+
+    }
+
+});
 
 function getSelectedGunMakeIndex () {
 
@@ -211,14 +339,29 @@ function getSelectedGunMakeName () {
 
 }
 
+function getSelectedGunTypeName () {
+
+    return typeInformation[selectedGunTypeIndex].name;
+
+}
+
+function getTypeInformation (index) {
+
+    return typeInformation[index];
+
+}
+
 function resetBasicSelection () {
 
     selectedGunMakeIndex = -1;
     selectedGunTypeIndex = -1;
 
-    // Reset make information card
+    disableNameInput();
+
+    // Reset information cards
 
     updateMakeInformationCard();
+    updateTypeInformationCard();
 
     // Disable masterwork button as gun type needs to be chosen
 
@@ -259,7 +402,7 @@ function resetBasicSelection () {
 
 function updateGunName () {
 
-    nameSpan.innerText = (selectedGunTypeIndex === -1 || selectedGunMakeIndex === -1) ? 'New Gun' : gunMakeButtons[selectedGunMakeIndex].innerText + ' ' + gunTypeButtons[selectedGunTypeIndex].innerText;
+    nameInput.value = (selectedGunTypeIndex === -1 || selectedGunMakeIndex === -1) ? 'New Gun' : gunMakeButtons[selectedGunMakeIndex].innerText + ' ' + gunTypeButtons[selectedGunTypeIndex].innerText;
 
 }
 
@@ -291,6 +434,52 @@ function updateMakeInformationCard () {
 
     makeTraitNameText.innerHTML = '<b>Make trait:</b> ' + makeDetails.makeTrait.name;
     makeTraitText.innerText = makeDetails.makeTrait.description;
+
+}
+
+function getCaliberDice (caliber) {
+
+    return caliberDice[parseInt(caliber) - 1];
+
+}
+
+function updateTypeInformationCard () {
+
+    if (selectedGunTypeIndex === -1) {
+
+        typeNameText.innerText = 'Select a gun type';
+        typeCaliberText.innerText = '';
+        typeRangeText.innerText = '';
+        typeMisfireText.innerText = '';
+        typeCapacityText.innerText = '';
+        typeDurabilityText.innerText = '';
+        typeWeightText.innerText = '';
+        typeKeywordsText.innerText = '';
+
+        typeAttackBonusText.innerText = '';
+        typeDamageText.innerText = '';
+
+        mainTypeInfo.style.display = 'none';
+
+        return;
+
+    }
+
+    mainTypeInfo.style.display = '';
+
+    const typeDetails = typeInformation[selectedGunTypeIndex];
+
+    typeNameText.innerText = typeDetails.name;
+    typeCaliberText.innerText = typeDetails.caliber;
+    typeRangeText.innerText = typeDetails.shortRange + '/' + typeDetails.longRange;
+    typeMisfireText.innerText = typeDetails.misfire;
+    typeCapacityText.innerText = typeDetails.bulletCapacity;
+    typeDurabilityText.innerText = typeDetails.durability;
+    typeWeightText.innerText = typeDetails.weight;
+    typeKeywordsText.innerText = typeDetails.keywords;
+
+    typeAttackBonusText.innerText = '+1';
+    typeDamageText.innerText = getCaliberDice(typeDetails.caliber);
 
 }
 
@@ -386,6 +575,10 @@ for (let i = 0; i < gunTypeButtons.length; i++) {
     gunTypeButtons[i].addEventListener('click', () => {
 
         selectedGunTypeIndex = selectedGunTypeIndex === i ? -1 : i;
+
+        // Update button displaying gun type information
+
+        updateTypeInformationCard();
 
         // Enable select masterworks button
 

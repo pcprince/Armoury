@@ -23,6 +23,12 @@ function getCurrentPrice () {
 
 }
 
+function formatNumberWithCommas (number) {
+
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+}
+
 class NumberAnimator {
 
     constructor (element, duration = 1000) {
@@ -67,7 +73,7 @@ class NumberAnimator {
             this.currentValue + (this.targetValue - this.currentValue) * progress
         );
 
-        this.element.textContent = newValue;
+        this.element.textContent = formatNumberWithCommas(newValue);
 
         // Continue or finish the animation
         if (progress < 1) {

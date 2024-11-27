@@ -22,14 +22,57 @@
 
         <div class="row" style="margin-top: 15px; min-height: 24px;">
             <div class="col" style="text-align: center;">
-                <span id="name-span" style="font-size: xx-large;">New Gun</span>
-                <!-- TODO: Renaming -->
-                <!-- <img src="./images/pencil-square.svg"> -->
+                <input id="name-input" style="font-size: xx-large; text-align: center; width: 25%;" value="New Gun" class="disabled-name-input" disabled>
             </div>
         </div>
 
+        <div class="centered-container" id="overview-card-container" style="display: none; margin-top: 10px; margin-bottom: 5px;">
+
+            <div class="card information-card">
+
+                <h5 class="card-header" id="overview-name-text" style="min-height: 42px;">New Gun</h5>
+
+                <div class="card-body small">
+
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p class="mb-1">Caliber:</p>
+                            <p class="mb-1">Range:</p>
+                            <p class="mb-1">Misfire:</p>
+                            <p class="mb-1">Capacity:</p>
+                            <p class="mb-1">Durability:</p>
+                            <p class="mb-1">Weight:</p>
+                        </div>
+    
+                        <div class="col-md-4 text-end">
+                            <p class="mb-1" id="overview-caliber-text"></p>
+                            <p class="mb-1" id="overview-range-text"></p>
+                            <p class="mb-1" id="overview-misfire-text"></p>
+                            <p class="mb-1" id="overview-capacity-text"></p>
+                            <p class="mb-1" id="overview-durability-text"></p>
+                            <p class="mb-1" id="overview-weight-text"></p>
+                        </div>
+    
+                        <div class="col-md-2">
+                            <p class="mb-1">Attack bonus:</p>
+                            <p class="mb-1">Damage:</p>
+                            <p class="mb-1">Keywords:</p>
+                        </div>
+    
+                        <div class="col-md-4 text-end">
+                            <p class="mb-1">DEX + Proficiency <span id="overview-attack-bonus-text"></span></p>
+                            <p class="mb-1"><span id="overview-damage-text"></span> + DEX</p>
+                            <p class="mb-1" id="overview-keywords-text"></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
         <div class="row" style="margin-top: 2px;">
-            <div class="col" style="text-align: center;">
+            <div class="col" style="text-align: center; font-size: x-large;">
                 <span id="price-span">0</span>g
             </div>
         </div>
@@ -42,16 +85,16 @@
 
             <div class="centered-container">
 
-                <div class="card" style="width: 30%;">
+                <div class="card information-card">
     
                     <h5 class="card-header" id="make-name-text" style="min-height: 42px;">Select a gun make</h5>
     
-                    <div class="card-body" style="display: none;" id="main-make-info">
+                    <div class="card-body small" style="display: none;" id="main-make-info">
                         <h5 class="card-title" id="design-ethos-text"></h5>
                         <p class="card-text" id="history-text"></p>
                     </div>
     
-                    <div class="card-body" style="display: none;" id="make-trait-info">
+                    <div class="card-body small" style="display: none;" id="make-trait-info">
                         <h5 class="card-title" id="make-trait-name-text"></h5>
                         <p class="card-text" id="make-trait-text"></p>
                     </div>
@@ -90,9 +133,56 @@
 
             <hr>
 
+            <!-- Gun type information -->
+
+            <div class="centered-container">
+
+                <div class="card information-card">
+
+                    <h5 class="card-header" id="type-name-text" style="min-height: 42px;">Select a gun type</h5>
+
+                    <div class="card-body small" style="display: none;" id="main-type-info">
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                <p class="mb-1">Caliber:</p>
+                                <p class="mb-1">Range:</p>
+                                <p class="mb-1">Misfire:</p>
+                                <p class="mb-1">Capacity:</p>
+                                <p class="mb-1">Durability:</p>
+                                <p class="mb-1">Weight:</p>
+                            </div>
+        
+                            <div class="col-md-4 text-end">
+                                <p class="mb-1" id="type-caliber-text"></p>
+                                <p class="mb-1" id="type-range-text"></p>
+                                <p class="mb-1" id="type-misfire-text"></p>
+                                <p class="mb-1" id="type-capacity-text"></p>
+                                <p class="mb-1" id="type-durability-text"></p>
+                                <p class="mb-1" id="type-weight-text"></p>
+                            </div>
+        
+                            <div class="col-md-2">
+                                <p class="mb-1">Attack bonus:</p>
+                                <p class="mb-1">Damage:</p>
+                                <p class="mb-1">Keywords:</p>
+                            </div>
+        
+                            <div class="col-md-4 text-end">
+                                <p class="mb-1">DEX + Proficiency <span id="type-attack-bonus-text"></span></p>
+                                <p class="mb-1"><span id="type-damage-text"></span> + DEX</p>
+                                <p class="mb-1" id="type-keywords-text"></p>
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+
+            </div>
+
             <!-- Gun type selection -->
 
-            <div class="row justify-content-center" style="margin-top: 2px;">
+            <div class="row justify-content-center" style="margin-top: 15px;">
                 <div class="col-auto text-center">
                     <button class="btn btn-secondary gun-type-button" disabled>Revolver</button>
                     <div class="gun-price-text">0</div>
@@ -129,7 +219,7 @@
 
             <div class="row" style="margin-top: 10px;">
                 <div class="col" style="text-align: center;">
-                    <button class="btn btn-success" id="select-masterworks-button" disabled>Select Masterworks</button>
+                    <button class="btn btn-success" id="select-masterworks-button" disabled>Select Masterwork Traits</button>
                 </div>
             </div>
 
@@ -155,6 +245,7 @@
 
 <script src="js/price.js"></script>
 <script src="js/basicSelection.js"></script>
+<script src="js/overview.js"></script>
 <script src="js/masterworks.js"></script>
 <script src="js/masterworkSelection.js"></script>
 <script src="js/index.js"></script>
