@@ -231,6 +231,8 @@ function removeLatestMasterwork () {
 
     updateAddButtons();
 
+    updateOverviewCard(masterworkSelection);
+
 }
 
 function updatePrices () {

@@ -269,8 +269,8 @@ const typeInformation = [
     {
         'name': 'Shotgun Slug (Shot)',
         'caliber': '6(5)',
-        'shortRange': '10/40',
-        'longRange': '40/120',
+        'shortRange': '10(40)',
+        'longRange': '40(120)',
         'misfire': 3,
         'bulletCapacity': 2,
         'durability': 20,
@@ -296,6 +296,14 @@ const caliberDice = ['1d6', '1d8', '1d10', '1d12', '2d8', '2d10', '2d12', '3d8',
 
 let selectedGunTypeIndex = -1;
 let selectedGunMakeIndex = -1;
+
+const GUN_TYPE_REVOLVER = 0;
+const GUN_TYPE_HOLDOUT_PISTOL = 1;
+const GUN_TYPE_CAVALRY_PISTOL = 2;
+const GUN_TYPE_RIFLE = 3;
+const GUN_TYPE_CARBINE = 4;
+const GUN_TYPE_SHOTGUN = 5;
+const GUN_TYPE_HUNTING_RIFLE = 6;
 
 function enableNameInput () {
 
@@ -469,17 +477,53 @@ function updateTypeInformationCard () {
 
     const typeDetails = typeInformation[selectedGunTypeIndex];
 
-    typeNameText.innerText = typeDetails.name;
-    typeCaliberText.innerText = typeDetails.caliber;
-    typeRangeText.innerText = typeDetails.shortRange + '/' + typeDetails.longRange;
-    typeMisfireText.innerText = typeDetails.misfire;
-    typeCapacityText.innerText = typeDetails.bulletCapacity;
-    typeDurabilityText.innerText = typeDetails.durability;
-    typeWeightText.innerText = typeDetails.weight;
-    typeKeywordsText.innerText = typeDetails.keywords;
+    if (selectedGunTypeIndex === GUN_TYPE_SHOTGUN) {
 
-    typeAttackBonusText.innerText = '+1';
-    typeDamageText.innerText = getCaliberDice(typeDetails.caliber);
+        const caliberSplit = typeDetails.caliber.split('(');
+        const slugCaliber = parseInt(caliberSplit[0]);
+        const shotCaliber = parseInt(caliberSplit[1]);
+
+        const shortRangeSplit = typeDetails.shortRange.split('(');
+        const slugShortRange = parseInt(shortRangeSplit[0]);
+        const shotShortRange = parseInt(shortRangeSplit[1]);
+
+        const longRangeSplit = typeDetails.longRange.split('(');
+        const slugLongRange = parseInt(longRangeSplit[0]);
+        const shotLongRange = parseInt(longRangeSplit[1]);
+
+        const misfire = typeDetails.misfire;
+
+        const bulletCapacity = typeDetails.bulletCapacity;
+
+        const durability = typeDetails.durability;
+
+        typeNameText.innerText = getSelectedGunMakeName() + ' ' + getSelectedGunTypeName();
+        typeCaliberText.innerText = slugCaliber + ' (' + shotCaliber + ')';
+        typeRangeText.innerText = slugShortRange + '/' + slugLongRange + ' (' + shotShortRange + '/' + shotLongRange + ')';
+        typeMisfireText.innerText = misfire;
+        typeCapacityText.innerText = bulletCapacity;
+        typeDurabilityText.innerText = durability;
+        typeWeightText.innerText = typeDetails.weight;
+        typeKeywordsText.innerText = typeDetails.keywords;
+
+        typeAttackBonusText.innerText = '+1';
+        typeDamageText.innerText = getCaliberDice(slugCaliber) + ' (' + getCaliberDice(shotCaliber) + ')';
+
+    } else {
+
+        typeNameText.innerText = typeDetails.name;
+        typeCaliberText.innerText = typeDetails.caliber;
+        typeRangeText.innerText = typeDetails.shortRange + '/' + typeDetails.longRange;
+        typeMisfireText.innerText = typeDetails.misfire;
+        typeCapacityText.innerText = typeDetails.bulletCapacity;
+        typeDurabilityText.innerText = typeDetails.durability;
+        typeWeightText.innerText = typeDetails.weight;
+        typeKeywordsText.innerText = typeDetails.keywords;
+
+        typeAttackBonusText.innerText = '+1';
+        typeDamageText.innerText = getCaliberDice(typeDetails.caliber);
+
+    }
 
 }
 

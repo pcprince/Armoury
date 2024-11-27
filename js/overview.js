@@ -4,6 +4,7 @@
  * November 2024
  *****************************************************************************/
 
+/* global GUN_TYPE_SHOTGUN */
 /* global getSelectedGunMakeName, getSelectedGunTypeName, getSelectedGunTypeIndex, getTypeInformation, getCaliberDice */
 
 const overviewCardContainer = document.getElementById('overview-card-container');
@@ -35,65 +36,147 @@ function updateOverviewCard (masterworkSelection) {
 
     const overviewDetails = getTypeInformation(getSelectedGunTypeIndex());
 
-    // Apply masterwork changes
+    // Shotguns are weird
 
-    let attackBonus = 1;
-    let durability = parseInt(overviewDetails.durability);
-    let shortRange = parseInt(overviewDetails.shortRange);
-    let longRange = parseInt(overviewDetails.longRange);
-    let bulletCapacity = parseInt(overviewDetails.bulletCapacity);
-    let misfire = parseInt(overviewDetails.misfire);
+    if (getSelectedGunTypeIndex() === GUN_TYPE_SHOTGUN) {
 
-    let caliber = parseInt(overviewDetails.caliber);
+        const caliberSplit = overviewDetails.caliber.split('(');
+        let slugCaliber = parseInt(caliberSplit[0]);
+        let shotCaliber = parseInt(caliberSplit[1]);
 
-    for (let i = 0; i < masterworkSelection.length; i++) {
+        const shortRangeSplit = overviewDetails.shortRange.split('(');
+        let slugShortRange = parseInt(shortRangeSplit[0]);
+        let shotShortRange = parseInt(shortRangeSplit[1]);
 
-        switch (masterworkSelection[i].name) {
+        const longRangeSplit = overviewDetails.longRange.split('(');
+        let slugLongRange = parseInt(longRangeSplit[0]);
+        let shotLongRange = parseInt(longRangeSplit[1]);
 
-        case 'Accurate +X':
-            attackBonus++;
-            break;
+        let misfire = parseInt(overviewDetails.misfire);
 
-        case 'Durable':
-            durability *= 2;
-            break;
+        let bulletCapacity = parseInt(overviewDetails.bulletCapacity);
 
-        case 'Extra Range':
-            shortRange *= 1.25;
-            shortRange = Math.ceil(shortRange / 5) * 5;
+        let durability = parseInt(overviewDetails.durability);
 
-            longRange *= 1.25;
-            longRange = Math.ceil(longRange / 5) * 5;
-            break;
+        let attackBonus = 1;
 
-        case 'Enlarged Clip':
-            bulletCapacity = Math.ceil(bulletCapacity * 1.5);
-            break;
+        for (let i = 0; i < masterworkSelection.length; i++) {
 
-        case 'Higher Caliber':
-            caliber++;
-            break;
+            switch (masterworkSelection[i].name) {
 
-        case 'Naval Brass':
-            misfire = Math.max(1, misfire - 1);
-            break;
+            case 'Accurate +X':
+                attackBonus++;
+                break;
+
+            case 'Durable':
+                durability *= 2;
+                break;
+
+            case 'Extra Range':
+                slugShortRange *= 1.25;
+                slugShortRange = Math.ceil(slugShortRange / 5) * 5;
+
+                shotShortRange *= 1.25;
+                shotShortRange = Math.ceil(shotShortRange / 5) * 5;
+
+                slugLongRange *= 1.25;
+                slugLongRange = Math.ceil(slugLongRange / 5) * 5;
+
+                shotLongRange *= 1.25;
+                shotLongRange = Math.ceil(shotLongRange / 5) * 5;
+                break;
+
+            case 'Enlarged Clip':
+                bulletCapacity = Math.ceil(bulletCapacity * 1.5);
+                break;
+
+            case 'Higher Caliber':
+                slugCaliber++;
+                shotCaliber++;
+                break;
+
+            case 'Naval Brass':
+                misfire = Math.max(1, misfire - 1);
+                break;
+
+            }
 
         }
 
+        // Add values to card
+
+        overviewNameText.innerText = getSelectedGunMakeName() + ' ' + getSelectedGunTypeName();
+        overviewCaliberText.innerText = slugCaliber + ' (' + shotCaliber + ')';
+        overviewRangeText.innerText = slugShortRange + '/' + slugLongRange + ' (' + shotShortRange + '/' + shotLongRange + ')';
+        overviewMisfireText.innerText = misfire;
+        overviewCapacityText.innerText = bulletCapacity;
+        overviewDurabilityText.innerText = durability;
+        overviewWeightText.innerText = overviewDetails.weight;
+        overviewKeywordsText.innerText = overviewDetails.keywords;
+
+        overviewAttackBonusText.innerText = '+' + attackBonus;
+        overviewDamageText.innerText = getCaliberDice(slugCaliber) + ' (' + getCaliberDice(shotCaliber) + ')';
+
+    } else {
+
+        let caliber = parseInt(overviewDetails.caliber);
+        let attackBonus = 1;
+        let durability = parseInt(overviewDetails.durability);
+        let shortRange = parseInt(overviewDetails.shortRange);
+        let longRange = parseInt(overviewDetails.longRange);
+        let bulletCapacity = parseInt(overviewDetails.bulletCapacity);
+        let misfire = parseInt(overviewDetails.misfire);
+
+        for (let i = 0; i < masterworkSelection.length; i++) {
+
+            switch (masterworkSelection[i].name) {
+
+            case 'Accurate +X':
+                attackBonus++;
+                break;
+
+            case 'Durable':
+                durability *= 2;
+                break;
+
+            case 'Extra Range':
+                shortRange *= 1.25;
+                shortRange = Math.ceil(shortRange / 5) * 5;
+
+                longRange *= 1.25;
+                longRange = Math.ceil(longRange / 5) * 5;
+                break;
+
+            case 'Enlarged Clip':
+                bulletCapacity = Math.ceil(bulletCapacity * 1.5);
+                break;
+
+            case 'Higher Caliber':
+                caliber++;
+                break;
+
+            case 'Naval Brass':
+                misfire = Math.max(1, misfire - 1);
+                break;
+
+            }
+
+        }
+
+        // Add values to card
+
+        overviewNameText.innerText = getSelectedGunMakeName() + ' ' + getSelectedGunTypeName();
+        overviewCaliberText.innerText = caliber;
+        overviewRangeText.innerText = shortRange + '/' + longRange;
+        overviewMisfireText.innerText = misfire;
+        overviewCapacityText.innerText = bulletCapacity;
+        overviewDurabilityText.innerText = durability;
+        overviewWeightText.innerText = overviewDetails.weight;
+        overviewKeywordsText.innerText = overviewDetails.keywords;
+
+        overviewAttackBonusText.innerText = '+' + attackBonus;
+        overviewDamageText.innerText = getCaliberDice(caliber);
+
     }
-
-    // Add values to card
-
-    overviewNameText.innerText = getSelectedGunMakeName() + ' ' + getSelectedGunTypeName();
-    overviewCaliberText.innerText = caliber;
-    overviewRangeText.innerText = shortRange + '/' + longRange;
-    overviewMisfireText.innerText = misfire;
-    overviewCapacityText.innerText = bulletCapacity;
-    overviewDurabilityText.innerText = durability;
-    overviewWeightText.innerText = overviewDetails.weight;
-    overviewKeywordsText.innerText = overviewDetails.keywords;
-
-    overviewAttackBonusText.innerText = '+' + attackBonus;
-    overviewDamageText.innerText = getCaliberDice(caliber);
 
 }
