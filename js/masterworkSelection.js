@@ -3,7 +3,7 @@
  * November 2024
  *****************************************************************************/
 
-/* global enableNameInput, getSelectedGunMakeName, getMasterworksByMaker, getStandardisedPartsMasterworks, setMasterworkTotalPrice, showOverviewCard, updateOverviewCard */
+/* global enableNameInput, getSelectedGunMakeName, getMasterworksByMaker, getStandardisedPartsMasterworks, setMasterworkTotalPrice, showOverviewCard, updateOverviewCard, getCurrentKeywords */
 
 const selectMasterworksButton = document.getElementById('select-masterworks-button');
 
@@ -12,13 +12,19 @@ const masterworkSelectionDiv = document.getElementById('masterwork-selection-div
 
 const masterworkContainer = document.getElementById('masterwork-container');
 const masterworkSelectionContainer = document.getElementById('masterwork-selection-container');
+
+const standardisedPartsSearchContainer = document.getElementById('standardised-parts-search-container');
+const standardisedPartsSearchInput = document.getElementById('standardised-parts-search-input');
 const standardisedPartsContainer = document.getElementById('standardised-parts-container');
 
 let cards = [];
+let standardisedPartsCards = [];
 
 let possibleMasterworks = [];
 let masterworkSelection = [];
 let masterworkPriceStrings = [];
+
+let standardisedPartsEnabled = false;
 
 class Masterwork {
 
@@ -92,7 +98,7 @@ function fillRowWithPlaceholders (row, count) {
 
 }
 
-function checkforPlusX (position, card) {
+function checkForMultiMasterworks (position, card) {
 
     const cardTitle = card.querySelector('.card-header');
     const name = cardTitle.innerText;
@@ -161,7 +167,7 @@ function updateSelectedMasterworkDisplay () {
 
         // Add '(+current bonus)' to title if masterwork is Accurate +X or Specialisation +X
 
-        checkforPlusX(i, card);
+        checkForMultiMasterworks(i, card);
 
         const removeButton = card.querySelector('.remove-button');
         removeButton.disabled = i !== masterworkSelection.length - 1;
@@ -268,7 +274,7 @@ function buildCard (masterwork, selected) {
     const descriptionText = document.createElement('p');
     descriptionText.className = 'card-text';
 
-    descriptionText.innerHTML = '<i>' + masterwork.maker + '</i>';
+    descriptionText.innerHTML = '<i class="maker">' + masterwork.maker + '</i>';
     descriptionText.innerHTML += '<br>';
     descriptionText.innerHTML += masterwork.description;
 
@@ -324,7 +330,13 @@ function buildCard (masterwork, selected) {
 
 }
 
+standardisedPartsSearchInput.addEventListener('keyup', enableStandardisedParts);
+
 function enableStandardisedParts () {
+
+    standardisedPartsEnabled = true;
+
+    standardisedPartsCards = [];
 
     // Disable general masterworks and masterworks for current gun
 
@@ -340,26 +352,41 @@ function enableStandardisedParts () {
 
     // Populate standardised parts card list
 
+    standardisedPartsSearchContainer.style.display = '';
     standardisedPartsContainer.style.display = '';
     standardisedPartsContainer.innerHTML = '';
 
-    const line = document.createElement('hr');
-    standardisedPartsContainer.appendChild(line);
-
     const standardisedMasterworks = getStandardisedPartsMasterworks();
 
-    // TODO: Add search bar
+    const searchTerm = standardisedPartsSearchInput.value.toLowerCase();
 
     let currentRow = null;
 
+    let n = 0;
+
     for (let i = 0; i < standardisedMasterworks.length; i++) {
 
-        if (i % 7 === 0) {
+        if (searchTerm !== '') {
+
+            const name = standardisedMasterworks[i].name.toLowerCase();
+            const description = standardisedMasterworks[i].description.toLowerCase();
+            const maker = standardisedMasterworks[i].maker.toLowerCase();
+            const kicker = standardisedMasterworks[i].kicker.toLowerCase();
+
+            if (!name.includes(searchTerm) && !description.includes(searchTerm) && !maker.includes(searchTerm) && !kicker.includes(searchTerm)) {
+
+                continue;
+
+            }
+
+        }
+
+        if (n % 7 === 0) {
 
             currentRow = document.createElement('div');
             currentRow.className = 'row g-3';
 
-            if (i === 0) {
+            if (n === 0) {
 
                 currentRow.style.marginTop = '0px';
 
@@ -369,10 +396,14 @@ function enableStandardisedParts () {
 
         }
 
+        n++;
+
         const col = document.createElement('div');
         col.className = 'col';
 
         const card = buildCard(standardisedMasterworks[i], false);
+
+        standardisedPartsCards.push(card);
 
         const addButton = card.querySelector('.add-button');
 
@@ -396,6 +427,8 @@ function enableStandardisedParts () {
 
     }
 
+    updateAddButtons();
+
     // Update prices for standardised parts masterworks
 
     const priceElements = standardisedPartsContainer.getElementsByClassName('price');
@@ -416,6 +449,8 @@ function enableStandardisedParts () {
 
 function disableStandardisedParts () {
 
+    standardisedPartsEnabled = false;
+
     // Disable general masterworks and masterworks for current gun
 
     const addButtons = masterworkContainer.getElementsByClassName('add-button');
@@ -429,6 +464,7 @@ function disableStandardisedParts () {
     // Hide UI
 
     standardisedPartsContainer.style.display = 'none';
+    standardisedPartsSearchContainer.style.display = 'none';
 
     // Reset price UI
 
@@ -436,12 +472,30 @@ function disableStandardisedParts () {
 
 }
 
+function requirementCheck (addButton, keywords, masterwork, masterworkWithRequirement, requiredKeyword) {
+
+    if (masterwork === masterworkWithRequirement && !keywords.includes(requiredKeyword)) {
+
+        addButton.disabled = true;
+        return true;
+
+    }
+
+    return false;
+
+}
+
 function updateAddButtons () {
 
-    for (let i = 0; i < cards.length; i++) {
+    const keywords = getCurrentKeywords();
 
-        const cardTitle = cards[i].querySelector('.card-header');
+    const cardsToBeChecked = standardisedPartsEnabled ? [...cards, ...standardisedPartsCards] : cards;
+
+    for (let i = 0; i < cardsToBeChecked.length; i++) {
+
+        const cardTitle = cardsToBeChecked[i].querySelector('.card-header');
         const name = cardTitle.innerText;
+        const maker = cardsToBeChecked[i].querySelector('.maker').innerText;
 
         // Count how many times 'Accurate +X' and 'Specialisation +X' have been chosen
 
@@ -449,8 +503,18 @@ function updateAddButtons () {
         let specialisationCount = 0;
 
         let alreadySelected = false;
+        let salcorinSelected = false;
 
         for (let j = 0; j < masterworkSelection.length; j++) {
+
+            const selectionName = masterworkSelection[j].name;
+            const selectionMaker = masterworkSelection[j].maker;
+
+            if (selectionMaker === 'Salcorin Bespoke') {
+
+                salcorinSelected = true;
+
+            }
 
             accurateCount += masterworkSelection[j].name === 'Accurate +X' ? 1 : 0;
             specialisationCount += masterworkSelection[j].name === 'Specialisation +X' ? 1 : 0;
@@ -461,9 +525,88 @@ function updateAddButtons () {
 
             }
 
+            if (selectionName === 'Steady') {
+
+                keywords.push('Steady');
+
+            }
+
+            if (selectionName === 'Etrugol Brass') {
+
+                keywords.push('Bulky');
+
+            }
+
+            if (selectionName === 'Travelling Arsenal') {
+
+                keywords.filter(k => k !== 'Light');
+
+            }
+
+            if (selectionName === 'Shortened Frame') {
+
+                keywords.filter(k => k !== '2-handed');
+
+            }
+
         }
 
-        const addButton = cards[i].querySelector('.add-button');
+        const addButton = cardsToBeChecked[i].querySelector('.add-button');
+
+        // Keyword requirements
+
+        if (requirementCheck(addButton, keywords, name, 'Longgun', '2-handed')) {
+
+            continue;
+
+        }
+
+        if (requirementCheck(addButton, keywords, name, 'Shortened Frame', '2-handed')) {
+
+            continue;
+
+        }
+
+        if (requirementCheck(addButton, keywords, name, 'Heavy Barrage', 'Spread')) {
+
+            continue;
+
+        }
+
+        if (requirementCheck(addButton, keywords, name, 'Rampart Gun', 'Steady')) {
+
+            continue;
+
+        }
+
+        if (requirementCheck(addButton, keywords, name, 'Solid Build', '2-handed')) {
+
+            continue;
+
+        }
+
+        if (requirementCheck(addButton, keywords, name, 'Coordinated Fire', 'Hipfire')) {
+
+            continue;
+
+        }
+
+        if (requirementCheck(addButton, keywords, name, 'Travelling Arsenal', 'Light')) {
+
+            continue;
+
+        }
+
+        // Limit Salcorin count to 1
+
+        if (maker === 'Salcorin Bespoke' && salcorinSelected) {
+
+            addButton.disabled = true;
+            continue;
+
+        }
+
+        // Limit other multi masterworks
 
         if (name === 'Accurate +X') {
 
@@ -475,7 +618,7 @@ function updateAddButtons () {
 
         } else if (name === 'Specialisation +X') {
 
-            if (specialisationCount >= 5) {
+            if (specialisationCount >= 3) {
 
                 addButton.disabled = true;
 
@@ -568,3 +711,5 @@ selectMasterworksButton.addEventListener('click', () => {
     updatePrices();
 
 });
+
+standardisedPartsSearchInput.value = '';

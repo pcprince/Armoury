@@ -377,7 +377,7 @@ const masterworks = [
     },
     {
         'name': 'Longgun',
-        'description': 'This trait can only be taken if the weapon has the  2-handed trait. When you hit with a melee attack using this weapon, you can expend a loaded ammunition to deal an additional 1d6 damage. Additionally this weapon gains reach.',
+        'description': 'This trait can only be taken if the weapon has the 2-handed trait. When you hit with a melee attack using this weapon, you can expend a loaded ammunition to deal an additional 1d6 damage. Additionally this weapon gains reach.',
         'kicker': '',
         'maker': 'Kammaren',
         'complexity': 'Basic'
@@ -544,6 +544,55 @@ const masterworks = [
         'complexity': 'Advanced'
     },
     {
+        'name': 'Naud the Rune of Hunger',
+        'description': 'When you make an attack with this weapon, you can have the attack consume twice the amount of ammunition. If you do the attack also inflicts the effect of going 2 days without food on the target on hit. (After 3 + Con days each additional day inflicts a level of exhaustion).',
+        'kicker': '',
+        'maker': 'Valmoran',
+        'complexity': 'Advanced'
+    },
+    {
+        'name': 'Myrr the Rune of Collapse',
+        'description': 'When you make an reduce the hitpoint of an enemy to 0 with this weapon, you can take a level of exhaustion. If you do you may take another action this turn.',
+        'kicker': '',
+        'maker': 'Valmoran',
+        'complexity': 'Advanced'
+    },
+    {
+        'name': 'Izaz the Rune of Desolation',
+        'description': 'When you make an attack with this weapon and it misfires, you can become deafened for 10 minutes. If you do you can reroll the attack with advantage. This effect can only be used once every 10 minutes.',
+        'kicker': '',
+        'maker': 'Valmoran',
+        'complexity': 'Advanced'
+    },
+    {
+        'name': 'Paorth the Rune of Madness',
+        'description': 'After you make an attack with this weapon, you can become confused for 10 minutes (At the start of each turn roll a d4: on a 1 act normally, on a 2 do nothing this round, on a 3 punch self and deal normal damage, on a 4 attack the nearest creature with this weapon.) At the end of your turns, make a DC 15 Wisdom saving throw, on success remove this condition. If you do become confused the target of the attack is hit by the spell Feeblemind with an effective spellcaster DC of 17.',
+        'kicker': '',
+        'maker': 'Valmoran',
+        'complexity': 'Advanced'
+    },
+    {
+        'name': 'Kauna the Rune of Affliction',
+        'description': 'When you make an attack with this weapon, you can become poisoned until the end of your next turn. If you do this weapon deals an additional 4d4 poison damage.',
+        'kicker': '',
+        'maker': 'Valmoran',
+        'complexity': 'Advanced'
+    },
+    {
+        'name': 'Haglaz the Rune of Deluge',
+        'description': "Once per round when you make an attack with this weapon, you can choose to be hit by the following effect without being able to reduce the damage in any way. If you do you can cast the spell erupting earth at 3rd level originating from your target's square (with a DC 15 Reflex save for half damage)",
+        'kicker': '',
+        'maker': 'Valmoran',
+        'complexity': 'Advanced'
+    },
+    {
+        'name': 'Fehu the Rune of Greed',
+        'description': 'This weapon is equipped with a special chamber which can be filled with 50gp worth of diamond powder (obtainable anywhere spellcrafting components could be bought). When you attack with this weapon you can choose to consume the diamond powder to use the upgraded effect of the bullet fired. The special chamber can be refilled by taking 10 minutes to disassemble and reassemble your gun.',
+        'kicker': '',
+        'maker': 'Valmoran',
+        'complexity': 'Advanced'
+    },
+    {
         'name': 'Heavy Barrage',
         'description': 'This trait can only be purchased if this weapon has Spread. Increase the area of the Spread cone to 25ft and you can split the damage evenly between up to 2 enemies.',
         'kicker': '',
@@ -593,8 +642,29 @@ const masterworks = [
         'complexity': 'Advanced'
     },
     {
-        'name': 'Energetic Converter',
-        'description': 'Choose an energy type from Fire, Cold, Lightning and Thunder for this weapon. Each time you make an attack, before you roll, you can choose to convert the damage the weapon deals into that energy type. This trait can be taken multiple times, choosing a new energy type each time.',
+        'name': 'Energetic Converter (Fire)',
+        'description': 'Each time you make an attack, before you roll, you can choose to convert the damage the weapon deals into fire damage.',
+        'kicker': '',
+        'maker': 'Tesiphon',
+        'complexity': 'Advanced'
+    },
+    {
+        'name': 'Energetic Converter (Cold)',
+        'description': 'Each time you make an attack, before you roll, you can choose to convert the damage the weapon deals into cold damage.',
+        'kicker': '',
+        'maker': 'Tesiphon',
+        'complexity': 'Advanced'
+    },
+    {
+        'name': 'Energetic Converter (Lightning)',
+        'description': 'Each time you make an attack, before you roll, you can choose to convert the damage the weapon deals into lightning damage.',
+        'kicker': '',
+        'maker': 'Tesiphon',
+        'complexity': 'Advanced'
+    },
+    {
+        'name': 'Energetic Converter (Thunder)',
+        'description': 'Each time you make an attack, before you roll, you can choose to convert the damage the weapon deals into thunder damage.',
         'kicker': '',
         'maker': 'Tesiphon',
         'complexity': 'Advanced'
@@ -783,7 +853,7 @@ const masterworks = [
     },
     {
         'name': "Dead Man's Hand",
-        'description': 'Once per combat at the start of your turn, you can specify that up to 5 targets will die during this turn. If they all die, gain that many charges which can be used for any of the following effects: \n- When you take damage, consume a charge to reduce each instance of damage you take this turn by 8 including the triggering source.\n- When you hit with an attack, consume a charge to make that attack a critical hit.\n- After you make an attack roll, but before any effects of the attack are applied, consume a charge to add 8 to the attack roll.\n- When you would be reduced to 0 hit points, consume a charge to instead be reduced to 1 hit point.\n- As a bonus action consume a charge to be able to use Dead Man’s Hand again this combat.\nIf any of the targets did not die, take the topmost penalty. Then for each other target still living take the next topmost unused penalty: \n- Take 5 damage.\n- Your AC is reduced by 2 until the end of the combat.\n- The next time this combat you take the attack action, all attacks made as part of that action are made with disadvantage.\n- Your misfire chance increases by 1 with all firearms until the end of this combat.\n- Your hitpoints are set to 0.',
+        'description': 'Once per combat at the start of your turn, you can specify that up to 5 targets will die during this turn. If they all die, gain that many charges which can be used for any of the following effects: <br>- When you take damage, consume a charge to reduce each instance of damage you take this turn by 8 including the triggering source.<br>- When you hit with an attack, consume a charge to make that attack a critical hit.<br>- After you make an attack roll, but before any effects of the attack are applied, consume a charge to add 8 to the attack roll.<br>- When you would be reduced to 0 hit points, consume a charge to instead be reduced to 1 hit point.<br>- As a bonus action consume a charge to be able to use Dead Man’s Hand again this combat.<br>If any of the targets did not die, take the topmost penalty. Then for each other target still living take the next topmost unused penalty: <br>- Take 5 damage.<br>- Your AC is reduced by 2 until the end of the combat.<br>- The next time this combat you take the attack action, all attacks made as part of that action are made with disadvantage.<br>- Your misfire chance increases by 1 with all firearms until the end of this combat.<br>- Your hitpoints are set to 0.',
         'kicker': '',
         'maker': 'Ironcoil',
         'complexity': 'Advanced'

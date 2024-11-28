@@ -8,6 +8,8 @@
 
 const resetButton = document.getElementById('reset-button');
 
+// TODO: Randomise button. Generate list of adjectives and gun synonyms for name
+
 resetButton.addEventListener('click', () => {
 
     resetBasicSelection();

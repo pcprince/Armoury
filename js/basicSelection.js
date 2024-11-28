@@ -159,9 +159,10 @@ const makeInformation = [
         }
     },
     {
+        // TODO: Carron is really complicated. Maybe implement it, maybe not
         name: 'Carron',
         designEthos: 'Multiple barrelled weapons which are a combination of features of each base model.',
-        history: 'Carron Volleyguns are of strange but well tested design, with multiple barrels in place of complex internal magazine space. Mostly employed by game hunters, they provide a source of firepower which is reliable in it\'s simplicity, a lbeit a little slow to reload.',
+        history: 'Carron Volleyguns are of strange but well tested design, with multiple barrels in place of complex internal magazine space. Mostly employed by game hunters, they provide a source of firepower which is reliable in it\'s simplicity, albeit a little slow to reload.',
         makeTrait: {
             name: 'Combination Weapons',
             description: 'Combination Weapons: Any two weapon models (including the same kind twice) are combined, paying the price of both. When you make an attack with this weapon you may fire all barrels as part of the attack. An attack made this way is made with disadvantage (this cannot be removed in any way) and all component weapons must be in range. Additionally when fired this way the weapon can only misfire or critical hit when all dice roll 1 or 20 respectively. Combination Weapons inherit all weapon keywords, have -1 capacity on each component weapon (to minimum of 1) and may only be reloaded outside of combat.'
@@ -191,7 +192,7 @@ const makeInformation = [
         history: 'Salcorin Bespoke Gunworks: No two guns leave the workshops of the Salcorin Bespoke exactly alike. All gunsmiths at the company are encouraged to place their own signature elements on each gun they produce and no gun is sold if the individual smith is unhappy with the way it fires.',
         makeTrait: {
             name: 'Knock \'em Down',
-            description: 'This weapon can be holstered and drawn for free. Activate this gun\'s Kicker effect when you hit with an attack after you have already hit with an attack using a different gun this round. This weapon can only trigger either it\'s regular effect or Kicker once per round. This weapon can only have one Salcorin Masterwork Trait.'
+            description: 'This weapon can be holstered and drawn for free. Activate this gun\'s Kicker effect when you hit with an attack after you have already hit with an attack using a different gun this round. This weapon can only trigger either it\'s regular effect or Kicker once per round.\n\nA weapon can only have one Salcorin Masterwork Trait.'
         }
     },
     {
@@ -216,7 +217,7 @@ const typeInformation = [
         'durability': 20,
         'keywords': 'Accurate 1, Hipfire',
         'cost': 450,
-        'weight': '2.5lb'
+        'weight': '2.5 lb'
     },
     {
         'name': 'Holdout Pistol',
@@ -228,7 +229,7 @@ const typeInformation = [
         'durability': 10,
         'keywords': 'Accurate 1, Light, Hipfire',
         'cost': 200,
-        'weight': '1lb'
+        'weight': '1 lb'
     },
     {
         'name': 'Cavalry Pistol',
@@ -240,7 +241,7 @@ const typeInformation = [
         'durability': 20,
         'keywords': 'Accurate 1, Hipfire, Equestrian',
         'cost': 500,
-        'weight': '3lb'
+        'weight': '3 lb'
     },
     {
         'name': 'Rifle',
@@ -252,7 +253,7 @@ const typeInformation = [
         'durability': 20,
         'keywords': 'Accurate 1, Steady, 2-handed',
         'cost': 900,
-        'weight': '12lb'
+        'weight': '12 lb'
     },
     {
         'name': 'Carbine',
@@ -264,7 +265,7 @@ const typeInformation = [
         'durability': 20,
         'keywords': 'Accurate 1, Steady, Equestrian, 2-handed',
         'cost': 1000,
-        'weight': '10lb'
+        'weight': '10 lb'
     },
     {
         'name': 'Shotgun Slug (Shot)',
@@ -276,7 +277,7 @@ const typeInformation = [
         'durability': 20,
         'keywords': 'Accurate 1, (Spread), 2-handed',
         'cost': 800,
-        'weight': '6.5lb'
+        'weight': '6.5 lb'
     },
     {
         'name': 'Hunting Rifle',
@@ -288,7 +289,7 @@ const typeInformation = [
         'durability': 20,
         'keywords': 'Accurate 1, Steady, Bulky, 2-handed',
         'cost': 750,
-        'weight': '8lb'
+        'weight': '8 lb'
     }
 ];
 
