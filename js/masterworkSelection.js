@@ -78,6 +78,8 @@ function resetMasterworkSelection () {
     masterworkSelection = [];
     masterworkPriceStrings = [];
 
+    standardisedPartsSearchInput.value = '';
+
     updateSelectedMasterworkDisplay();
 
     updateMasterworkCost();
