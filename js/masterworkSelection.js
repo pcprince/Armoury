@@ -37,7 +37,7 @@ class Masterwork {
 
 }
 
-const CHEAPER_CUSTOMISATION = new Masterwork(1, -1);
+const CHEAPER_CUSTOMISATION = new Masterwork(1, 0);
 const STANDARDISED_PARTS_PICK = new Masterwork(2, 2);
 const GENERIC_MASTERWORK = new Masterwork(1, 1);
 
@@ -46,18 +46,30 @@ function calculateMasterworkCost (masterworkList) {
     let totalCost = 0;
     let effectivePosition = 0;
 
+    let cheaperCustomisationEnabled = false;
+
     for (let i = 0; i < masterworkList.length; i++) {
 
-        let masterwork = masterworkList[i].name === 'Cheaper Customisation' ? CHEAPER_CUSTOMISATION : GENERIC_MASTERWORK;
+        let masterwork = GENERIC_MASTERWORK;
+
+        masterwork = masterworkList[i].name === 'Cheaper Customisation' ? CHEAPER_CUSTOMISATION : masterwork;
 
         if (i > 0) {
 
-            masterwork = masterworkList[i - 1].name === 'Standardised Parts' ? STANDARDISED_PARTS_PICK : GENERIC_MASTERWORK;
+            masterwork = masterworkList[i - 1].name === 'Standardised Parts' ? STANDARDISED_PARTS_PICK : masterwork;
 
         }
 
-        totalCost += 1000 * Math.pow(2, effectivePosition) * masterwork.priceMultiplier;
+        const basePrice = cheaperCustomisationEnabled ? 500 : 1000;
+
+        totalCost += basePrice * Math.pow(2, effectivePosition) * masterwork.priceMultiplier;
         effectivePosition += masterwork.positionIncrement;
+
+        if (masterworkList[i].name === 'Cheaper Customisation') {
+
+            cheaperCustomisationEnabled = true;
+
+        }
 
     }
 
