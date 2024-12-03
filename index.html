@@ -12,9 +12,25 @@
 
     <div class="container-fluid">
 
-        <div class="row" style="margin-top: 10px;">
-            <div class="col" style="text-align: center;">
+        <div class="row justify-content-center" style="margin-top: 10px;">
+            <div class="col-auto">
                 <button id="reset-button" class="btn btn-danger">Reset</button>
+            </div>
+
+            <div class="col-auto">
+                <select id="random-masterwork-count-select" class="form-select me-3" style="max-width: 80px;">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button id="random-button" class="btn btn-success">Random</button>
             </div>
         </div>
 
@@ -250,6 +266,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
+<script src="js/constants.js"></script>
 <script src="js/price.js"></script>
 <script src="js/basicSelection.js"></script>
 <script src="js/overview.js"></script>

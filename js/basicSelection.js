@@ -3,7 +3,7 @@
  * November 2024
  *****************************************************************************/
 
-/* global setBasePrice, resetBasePrice */
+/* global setBasePrice, resetBasePrice, getRandomInt */
 
 const nameInput = document.getElementById('name-input');
 
@@ -36,7 +36,7 @@ const typeKeywordsText = document.getElementById('type-keywords-text');
 
 const mainTypeInfo = document.getElementById('main-type-info');
 
-const supportedMakes = [
+const supportedArray = [
     // Revolver, Holdout Pistol, Cavalry Pistol, Rifle, Carbine, Shotgun, Hunting Rifle
     [true, true, true, true, true, true, true], // Ashforge
     [true, false, true, true, true, false, false], // Gaxit
@@ -320,15 +320,11 @@ function disableNameInput () {
 
 }
 
-nameInput.addEventListener('blur', () => {
+function setName (name) {
 
-    if (nameInput.value === '') {
+    nameInput.value = name;
 
-        updateGunName();
-
-    }
-
-});
+}
 
 function getSelectedGunMakeIndex () {
 
@@ -357,6 +353,35 @@ function getSelectedGunTypeName () {
 function getTypeInformation (index) {
 
     return typeInformation[index];
+
+}
+
+function generateRandomGun () {
+
+    const randomMakeIndex = getRandomInt(makeInformation.length);
+
+    selectGunMake(randomMakeIndex);
+
+    const supportedIndices = supportedArray[randomMakeIndex].reduce((indices, value, index) => {
+
+        if (value) {
+
+            indices.push(index);
+
+        }
+
+        return indices;
+
+    }, []);
+
+    const randomTypeIndex = supportedIndices[getRandomInt(supportedIndices.length)];
+
+    selectGunType(randomTypeIndex);
+
+    return {
+        make: randomMakeIndex,
+        type: randomTypeIndex
+    };
 
 }
 
@@ -536,7 +561,118 @@ function isGunMakeSupported (make, type) {
 
     }
 
-    return supportedMakes[make][type];
+    return supportedArray[make][type];
+
+}
+
+function selectGunMake (i) {
+
+    // If you click the already selected make, deselect it
+
+    selectedGunMakeIndex = i === selectedGunMakeIndex ? -1 : i;
+    selectedGunTypeIndex = -1;
+
+    // Update card displaying make information
+
+    updateMakeInformationCard();
+
+    // Disable masterwork button as gun type needs to be chosen
+
+    document.getElementById('select-masterworks-button').disabled = true;
+
+    // Update price display
+
+    resetBasePrice();
+
+    // Update basic name
+
+    updateGunName();
+
+    // Colour selected gun make green
+
+    for (let j = 0; j < gunMakeButtons.length; j++) {
+
+        const gunMakeButton = gunMakeButtons[j];
+
+        if (j === selectedGunMakeIndex) {
+
+            gunMakeButton.classList.remove('btn-primary');
+            gunMakeButton.classList.add('btn-success');
+
+        } else {
+
+            gunMakeButton.classList.remove('btn-success');
+            gunMakeButton.classList.add('btn-primary');
+
+        }
+
+    }
+
+    // Enable supported gun types
+
+    for (let j = 0; j < gunTypeButtons.length; j++) {
+
+        const gunTypeButton = gunTypeButtons[j];
+
+        gunTypeButton.classList.remove('btn-success');
+
+        if (isGunMakeSupported(selectedGunMakeIndex, j)) {
+
+            gunTypeButton.disabled = false;
+            gunTypeButton.classList.remove('btn-secondary');
+            gunTypeButton.classList.add('btn-primary');
+
+        } else {
+
+            gunTypeButton.disabled = true;
+            gunTypeButton.classList.remove('btn-primary');
+            gunTypeButton.classList.add('btn-secondary');
+
+        }
+
+    }
+
+}
+
+function selectGunType (i) {
+
+    selectedGunTypeIndex = selectedGunTypeIndex === i ? -1 : i;
+
+    // Update button displaying gun type information
+
+    updateTypeInformationCard();
+
+    // Enable select masterworks button
+
+    document.getElementById('select-masterworks-button').disabled = selectedGunTypeIndex === -1;
+
+    // Update basic name
+
+    updateGunName();
+
+    // Animate price display
+
+    setBasePrice(selectedGunTypeIndex === -1 ? 0 : gunPrices[i]);
+
+    // Colour selected gun type green
+
+    for (let i = 0; i < gunTypeButtons.length; i++) {
+
+        const gunTypeButton = gunTypeButtons[i];
+
+        if (i === selectedGunTypeIndex) {
+
+            gunTypeButton.classList.remove('btn-primary');
+            gunTypeButton.classList.add('btn-success');
+
+        } else {
+
+            gunTypeButton.classList.remove('btn-success');
+            gunTypeButton.classList.add('btn-primary');
+
+        }
+
+    }
 
 }
 
@@ -544,74 +680,21 @@ for (let i = 0; i < gunMakeButtons.length; i++) {
 
     gunMakeButtons[i].addEventListener('click', () => {
 
-        // If you click the already selected make, deselect it
-
-        selectedGunMakeIndex = i === selectedGunMakeIndex ? -1 : i;
-        selectedGunTypeIndex = -1;
-
-        // Update card displaying make information
-
-        updateMakeInformationCard();
-
-        // Disable masterwork button as gun type needs to be chosen
-
-        document.getElementById('select-masterworks-button').disabled = true;
-
-        // Update price display
-
-        resetBasePrice();
-
-        // Update basic name
-
-        updateGunName();
-
-        // Colour selected gun make green
-
-        for (let j = 0; j < gunMakeButtons.length; j++) {
-
-            const gunMakeButton = gunMakeButtons[j];
-
-            if (j === selectedGunMakeIndex) {
-
-                gunMakeButton.classList.remove('btn-primary');
-                gunMakeButton.classList.add('btn-success');
-
-            } else {
-
-                gunMakeButton.classList.remove('btn-success');
-                gunMakeButton.classList.add('btn-primary');
-
-            }
-
-        }
-
-        // Enable supported gun types
-
-        for (let j = 0; j < gunTypeButtons.length; j++) {
-
-            const gunTypeButton = gunTypeButtons[j];
-
-            gunTypeButton.classList.remove('btn-success');
-
-            if (isGunMakeSupported(selectedGunMakeIndex, j)) {
-
-                gunTypeButton.disabled = false;
-                gunTypeButton.classList.remove('btn-secondary');
-                gunTypeButton.classList.add('btn-primary');
-
-            } else {
-
-                gunTypeButton.disabled = true;
-                gunTypeButton.classList.remove('btn-primary');
-                gunTypeButton.classList.add('btn-secondary');
-
-            }
-
-        }
+        selectGunMake(i);
 
     });
 
 }
+
+nameInput.addEventListener('blur', () => {
+
+    if (nameInput.value === '') {
+
+        updateGunName();
+
+    }
+
+});
 
 // Add listeners to gun type buttons
 
@@ -619,43 +702,7 @@ for (let i = 0; i < gunTypeButtons.length; i++) {
 
     gunTypeButtons[i].addEventListener('click', () => {
 
-        selectedGunTypeIndex = selectedGunTypeIndex === i ? -1 : i;
-
-        // Update button displaying gun type information
-
-        updateTypeInformationCard();
-
-        // Enable select masterworks button
-
-        document.getElementById('select-masterworks-button').disabled = selectedGunTypeIndex === -1;
-
-        // Update basic name
-
-        updateGunName();
-
-        // Animate price display
-
-        setBasePrice(selectedGunTypeIndex === -1 ? 0 : gunPrices[i]);
-
-        // Colour selected gun type green
-
-        for (let i = 0; i < gunTypeButtons.length; i++) {
-
-            const gunTypeButton = gunTypeButtons[i];
-
-            if (i === selectedGunTypeIndex) {
-
-                gunTypeButton.classList.remove('btn-primary');
-                gunTypeButton.classList.add('btn-success');
-
-            } else {
-
-                gunTypeButton.classList.remove('btn-success');
-                gunTypeButton.classList.add('btn-primary');
-
-            }
-
-        }
+        selectGunType(i);
 
     });
 

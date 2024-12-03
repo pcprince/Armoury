@@ -3,7 +3,7 @@
  * November 2024
  *****************************************************************************/
 
-/* global enableNameInput, getSelectedGunMakeName, getMasterworksByMaker, getStandardisedPartsMasterworks, setMasterworkTotalPrice, showOverviewCard, updateOverviewCard, getCurrentKeywords */
+/* global enableNameInput, getSelectedGunMakeName, getMasterworksByMaker, getStandardisedPartsMasterworks, setMasterworkTotalPrice, showOverviewCard, updateOverviewCard, getCurrentKeywords, getRandomInt */
 
 const selectMasterworksButton = document.getElementById('select-masterworks-button');
 
@@ -70,6 +70,44 @@ function updateMasterworkCost () {
     const masterworkCost = calculateMasterworkCost(masterworkSelection);
 
     setMasterworkTotalPrice(masterworkCost);
+
+}
+
+function pickRandomMasterworks (count) {
+
+    for (let i = 0; i < count; i++) {
+
+        const validCards = [];
+
+        for (let j = 0; j < cards.length; j++) {
+
+            const card = cards[j];
+
+            const masterworkName = card.querySelector('.card-header').innerText;
+
+            const addButton = card.querySelector('.add-button');
+
+            if (!addButton.disabled && masterworkName !== 'Standardised Parts') {
+
+                validCards.push(card);
+
+            }
+
+        }
+
+        if (validCards.length === 0) {
+
+            console.log('No more valid masterworks');
+            break;
+
+        }
+
+        const randomCardValidIndex = getRandomInt(validCards.length);
+        const randomCardIndex = cards.indexOf(validCards[randomCardValidIndex]);
+
+        onAddButtonClick(randomCardIndex);
+
+    }
 
 }
 
@@ -640,7 +678,23 @@ function updateAddButtons () {
 
 }
 
-selectMasterworksButton.addEventListener('click', () => {
+function onAddButtonClick (i) {
+
+    const priceElement = cards[i].querySelector('.price');
+
+    addMasterwork(possibleMasterworks[i], priceElement.innerText);
+
+    updatePrices();
+
+    if (possibleMasterworks[i].name === 'Standardised Parts') {
+
+        enableStandardisedParts();
+
+    }
+
+}
+
+function displayMasterworkUI () {
 
     basicSelectionDiv.style.display = 'none';
     masterworkSelectionDiv.style.display = '';
@@ -692,17 +746,7 @@ selectMasterworksButton.addEventListener('click', () => {
 
         addButton.addEventListener('click', () => {
 
-            const priceElement = card.querySelector('.price');
-
-            addMasterwork(possibleMasterworks[i], priceElement.innerText);
-
-            updatePrices();
-
-            if (possibleMasterworks[i].name === 'Standardised Parts') {
-
-                enableStandardisedParts();
-
-            }
+            onAddButtonClick(i);
 
         });
 
@@ -712,6 +756,8 @@ selectMasterworksButton.addEventListener('click', () => {
 
     updatePrices();
 
-});
+}
+
+selectMasterworksButton.addEventListener('click', displayMasterworkUI);
 
 standardisedPartsSearchInput.value = '';
