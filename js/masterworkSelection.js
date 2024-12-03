@@ -84,10 +84,10 @@ function pickRandomMasterworks (count) {
             const card = cards[j];
 
             const masterworkName = card.querySelector('.card-header').innerText;
-
+            const maker = card.querySelector('.maker').innerText;
             const addButton = card.querySelector('.add-button');
 
-            if (!addButton.disabled && masterworkName !== 'Standardised Parts') {
+            if (!addButton.disabled && masterworkName !== 'Standardised Parts' && maker !== 'Carron') {
 
                 validCards.push(card);
 
