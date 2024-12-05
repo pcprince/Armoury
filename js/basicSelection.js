@@ -141,7 +141,7 @@ const makeInformation = [
         }
     },
     {
-        name: 'Faljuq',
+        name: 'Faljuqman',
         designEthos: 'Powerful shooting in exchange for rate of fire.',
         history: 'The Faljuq National Siege Works at Etrugol are ancient, producing weapons of war for centuaries. Given the Faljuqman reputation for massive scale gunpowder manufacture, it comes as no surprise that the first small arms they have yet produced favour a wide bore and heavy shot.',
         makeTrait: {
