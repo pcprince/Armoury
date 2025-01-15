@@ -293,7 +293,17 @@ const typeInformation = [
     }
 ];
 
-const caliberDice = ['1d6', '1d8', '1d10', '1d12', '2d8', '2d10', '2d12', '3d8', '3d10'];
+const caliberDice = [
+    [1, 'd6'],
+    [1, 'd8'],
+    [1, 'd10'],
+    [1, 'd12'],
+    [2, 'd8'],
+    [2, 'd10'],
+    [2, 'd12'],
+    [3, 'd8'],
+    [3, 'd10']
+];
 
 let selectedGunTypeIndex = -1;
 let selectedGunMakeIndex = -1;
@@ -323,6 +333,12 @@ function disableNameInput () {
 function setName (name) {
 
     nameInput.value = name;
+
+}
+
+function getName () {
+
+    return nameInput.value;
 
 }
 
@@ -471,6 +487,13 @@ function updateMakeInformationCard () {
 
 }
 
+function getCaliberDiceString(caliber) {
+
+    const [numDice, diceType] = getCaliberDice(caliber);
+    return `${numDice}${diceType}`;
+
+}
+
 function getCaliberDice (caliber) {
 
     return caliberDice[parseInt(caliber) - 1];
@@ -533,7 +556,7 @@ function updateTypeInformationCard () {
         typeKeywordsText.innerText = typeDetails.keywords;
 
         typeAttackBonusText.innerText = '+1';
-        typeDamageText.innerText = getCaliberDice(slugCaliber) + ' (' + getCaliberDice(shotCaliber) + ')';
+        typeDamageText.innerText = getCaliberDiceString(slugCaliber) + ' (' + getCaliberDiceString(shotCaliber) + ')';
 
     } else {
 
@@ -547,7 +570,7 @@ function updateTypeInformationCard () {
         typeKeywordsText.innerText = typeDetails.keywords;
 
         typeAttackBonusText.innerText = '+1';
-        typeDamageText.innerText = getCaliberDice(typeDetails.caliber);
+        typeDamageText.innerText = getCaliberDiceString(typeDetails.caliber);
 
     }
 

@@ -138,6 +138,12 @@ function resetMasterworkSelection () {
 
 }
 
+function getMasterworkSelection () {
+
+    return masterworkSelection;
+
+}
+
 function fillRowWithPlaceholders (row, count) {
 
     for (let i = 0; i < count; i++) {
@@ -258,7 +264,7 @@ function addMasterwork (m, currentPriceString) {
 
     updateAddButtons();
 
-    updateOverviewCard(masterworkSelection);
+    updateOverviewCard();
 
 }
 
@@ -289,7 +295,7 @@ function removeLatestMasterwork () {
 
     updateAddButtons();
 
-    updateOverviewCard(masterworkSelection);
+    updateOverviewCard();
 
 }
 
@@ -718,7 +724,7 @@ function displayMasterworkUI () {
     masterworkSelection = [];
 
     showOverviewCard();
-    updateOverviewCard(masterworkSelection);
+    updateOverviewCard();
 
     const generalMasterworks = getMasterworksByMaker('General');
 
@@ -737,6 +743,7 @@ function displayMasterworkUI () {
 
             currentRow = document.createElement('div');
             currentRow.className = 'row g-3';
+            currentRow.style.marginTop = '0px';
             masterworkContainer.appendChild(currentRow);
 
         }

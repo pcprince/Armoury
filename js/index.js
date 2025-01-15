@@ -3,19 +3,27 @@
  * November 2024
  *****************************************************************************/
 
-/* global disableNameInput, resetBasicSelection, resetMasterworkSelection, hideOverviewCard, generateRandomGun, displayMasterworkUI, pickRandomMasterworks, getRandomInt, setName */
+/* global disableNameInput, resetBasicSelection, resetMasterworkSelection, hideOverviewCard, generateRandomGun, displayMasterworkUI, pickRandomMasterworks, getRandomInt, setName, getOverview, getDescriptionText, getSelectedGunTypeIndex, GUN_TYPE_SHOTGUN, getCaliberDice, getCaliberDiceString */
 /* global basicSelectionDiv, masterworkSelectionDiv */
 
 const resetButton = document.getElementById('reset-button');
 const randomButton = document.getElementById('random-button');
+
+const exportButton = document.getElementById('export-button');
 
 const randomMasterworkCountSelect = document.getElementById('random-masterwork-count-select');
 
 // TODO: Exporting to Foundry JSON
 
 const genericAdjectives = [
-    'Ol\'', 'Rusty', 'Shadowed', 'Greedy', 'Fiery', 'Lone', 'Savage', 'Silent', 'Steely', 'Grizzled', 'Midnight', 'Roaring', 'Wicked', 'Fearless', 'Raging', 'Shattered', 'Relentless', 'Vengeful', 'Cold', 'Thunderous', 'Deadly', 'Ghostly', 'Dusty', 'Grim', 'Blazing', 'Brazen', 'Bigoted', 'Moist', 'Spurious', 'Degenerate', 'Filthy', 'Friendly', 'Harmonious', 'Fearful', 'Noisy', 'Gunpowder', 'Illegal', 'Legal', 'Greasy', 'Demonic',
-    'Brave', 'Mysterious', 'Tall', 'Shiny', 'Delicate', 'Gloomy', 'Sparse', 'Curious', 'Silent', 'Bold', 'Gentle', 'Friendly', 'Colorful', 'Sparkling', 'Cheerful', 'Loyal', 'Unpredictable', 'Eager', 'Fierce', 'Awkward', 'Warm', 'Intelligent', 'Fluffy', 'Quiet', 'Unusual', 'Serene', 'Harsh', 'Sturdy', 'Flawless', 'Adventurous', 'Spicy', 'Magical', 'Graceful', 'Mellow', 'Musical', 'Brilliant', 'Weird', 'Invisible', 'Vast', 'Sour', 'Playful', 'Chaotic', 'Deep', 'Smooth', 'Confident', 'Wild',
+    'Ol\'', 'Rusty', 'Shadowed', 'Greedy', 'Fiery', 'Lone', 'Savage', 'Silent', 'Steely', 'Grizzled', 'Midnight',
+    'Roaring', 'Wicked', 'Fearless', 'Raging', 'Shattered', 'Relentless', 'Vengeful', 'Cold', 'Thunderous', 'Deadly',
+    'Ghostly', 'Dusty', 'Grim', 'Blazing', 'Brazen', 'Bigoted', 'Moist', 'Spurious', 'Degenerate', 'Filthy', 'Friendly',
+    'Harmonious', 'Fearful', 'Noisy', 'Gunpowder', 'Illegal', 'Legal', 'Greasy', 'Demonic', 'Brave', 'Mysterious', 'Tall',
+    'Shiny', 'Delicate', 'Gloomy', 'Sparse', 'Curious', 'Silent', 'Bold', 'Gentle', 'Friendly', 'Colorful', 'Sparkling',
+    'Cheerful', 'Loyal', 'Unpredictable', 'Eager', 'Fierce', 'Awkward', 'Warm', 'Intelligent', 'Fluffy', 'Quiet', 'Unusual',
+    'Serene', 'Harsh', 'Sturdy', 'Flawless', 'Adventurous', 'Spicy', 'Magical', 'Graceful', 'Mellow', 'Musical', 'Brilliant',
+    'Weird', 'Invisible', 'Vast', 'Sour', 'Playful', 'Chaotic', 'Deep', 'Smooth', 'Confident', 'Wild',
     'Silver', 'Crimson', 'Blackened', 'Blue', 'Red', 'Green', 'Yellow', 'Purple', 'Orange', 'Pink', 'Bronze',
     'Marshall Lager\'s', 'Rev Runner\'s', 'Daniel Forsyth\'s', 'Blood Daniel\'s', 'Zhao\'s', 'Devil\'s'
 ];
@@ -29,9 +37,10 @@ const genericNouns = [
     'Firearm', 'Sidearm', 'Piece', 'Iron', 'Heater', 'Cannon', 'Gat', 'Blaster',
     'Shooter', 'Peacemaker', 'Bangstick', 'Rod', 'Strap', 'Heat', 'Hardware',
     'Machine', 'Popper', 'Equalizer', 'Smoke wagon', 'Chopper', 'Boomstick', 'Trigger',
-    'Terror', 'Big-Hitter', 'Death-Dealer', 'Bible', 'Rattlesnake', 'Broomhandle', '88',
+    'Terror', 'Big-Hitter', 'Death-Dealer', 'Bible', 'Rattlesnake', 'Broomhandle', '77',
     'Friend', 'Buddy', 'Companion', 'Brother', 'Sister', 'Partner',
     'Monk', 'Priest', 'Librarian', 'Bankrobber', 'Cowboy', 'Cattle Rustler',
+    'Mustard',
     'Goose', 'Duck', 'Eagle', 'Owl', 'Robin', 'Ibis', 'Grackle', 'Raven', 'Crow', 'Gull', 'Falcon', 'Pelican', 'Canary', 'Kingfisher', 'Flamingo', 'Kestrel', 'Swallow', 'Condor', 'Landshark'
 ];
 
@@ -95,5 +104,87 @@ randomButton.addEventListener('click', () => {
     setName(name);
 
     pickRandomMasterworks(parseInt(randomMasterworkCountSelect.value));
+
+});
+
+/* Exporting to FoundryVTT */
+
+function generateFoundryVTTJSON () {
+
+    const overview = getOverview();
+
+    if (getSelectedGunTypeIndex() !== GUN_TYPE_SHOTGUN) {
+
+        // TODO: Export a weapon from FOundry and compare the JSONs
+
+        const [diceCount, diceType] = getCaliberDice(overview.caliber);
+        const critDiceCount = diceCount * 2;
+
+        // Replace this with your actual data generation logic
+        const weaponData = {
+            name: overview.name,
+            type: 'weapon',
+            data: {
+                description: {
+                    value: getDescriptionText()
+                },
+                damage: {
+                    parts: [
+                        [`${diceCount}${diceType} + ${overview.damageBonus} + @abilities.dex.mod`, 'piercing']
+                    ]
+                },
+                range: {
+                    value: overview.shortRange,
+                    long: overview.longRange,
+                    units: 'ft'
+                },
+                attackBonus: `${overview.attackBonus} + @prof + @abilities.dex.mod`,
+                attack: {
+                    parts: [
+                        ['1d20 + @abilities.dex.mod + @prof', '']
+                    ],
+                    critical: {
+                        threshold: overview.critical,
+                        damage: {
+                            parts: [
+                                [`${critDiceCount}${diceType} + ${overview.damageBonus} + @abilities.dex.mod`, 'piercing']
+                            ]
+                        }
+                    },
+                    fumble: {
+                        threshold: overview.misfire,
+                        effect: 'Miss'
+                    }
+                }
+            }
+        };
+
+        return [JSON.stringify(weaponData, null, 2)];
+
+    } else {
+
+        console.log('SHOTGUN');
+        // TODO: Add 2 weapon JSONs for shot and slug
+
+        return [];
+
+    }
+
+}
+
+function downloadJSON (content, fileName, contentType) {
+
+    const a = document.createElement('a');
+    const file = new Blob([content], {type: contentType});
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
+
+}
+
+exportButton.addEventListener('click', () => {
+
+    const jsonData = generateFoundryVTTJSON();
+    downloadJSON(jsonData, 'weapon.json', 'application/json');
 
 });

@@ -5,7 +5,8 @@
  *****************************************************************************/
 
 /* global GUN_TYPE_SHOTGUN */
-/* global getSelectedGunMakeName, getSelectedGunTypeName, getSelectedGunTypeIndex, getTypeInformation, getCaliberDice, getCurrentPrice */
+/* global getSelectedGunMakeName, getSelectedGunTypeName, getSelectedGunTypeIndex, getTypeInformation, getCaliberDiceString, getCurrentPrice */
+/* global getMasterworkSelection, getName */
 
 const overviewCardContainer = document.getElementById('overview-card-container');
 const overviewNameText = document.getElementById('overview-name-text');
@@ -45,22 +46,57 @@ function getCurrentKeywords () {
 
 }
 
-function updateOverviewCard (masterworkSelection) {
+function getDescriptionText () {
 
-    const overviewDetails = getTypeInformation(getSelectedGunTypeIndex());
+    const masterworkSelection = getMasterworkSelection();
+    const overviewInformation = getOverview();
 
-    let misfire = parseInt(overviewDetails.misfire);
-    let bulletCapacity = parseInt(overviewDetails.bulletCapacity);
-    let durability = parseInt(overviewDetails.durability);
-    let keywordList = overviewDetails.keywords.split(', ');
+    let descriptionText = '<b>' + getSelectedGunMakeName() + ' ' + getSelectedGunTypeName() + '</b><br>';
+
+    descriptionText += 'Caliber: ' + overviewInformation.caliber + '<br>';
+    descriptionText += 'Misfire: ' + overviewInformation.misfire + '<br>';
+    descriptionText += 'Keywords: ' + overviewInformation.keywordList.join(', ') + '<br>';
+
+    if (masterworkSelection.length > 0) {
+
+        descriptionText += '<br>Masterworks:<br>';
+
+        for (let i = 0; i < masterworkSelection.length; i++) {
+
+            descriptionText += '<i>' + masterworkSelection[i].name + '</i><br>';
+            descriptionText += masterworkSelection[i].description;
+
+            if (i < masterworkSelection.length - 1) {
+
+                descriptionText += '<br>';
+
+            }
+
+        }
+
+    }
+
+    return descriptionText;
+
+}
+
+function getOverview () {
+
+    const typeInformation = getTypeInformation(getSelectedGunTypeIndex());
+
+    let misfire = parseInt(typeInformation.misfire);
+    let critical = 20;
+    let bulletCapacity = parseInt(typeInformation.bulletCapacity);
+    let durability = parseInt(typeInformation.durability);
+    let keywordList = typeInformation.keywords.split(', ');
     let attackBonus = 1;
     let damageBonus = 0;
 
     // Shotguns have 2 values for caliber and range
 
-    let caliber = parseInt(overviewDetails.caliber);
-    let shortRange = parseInt(overviewDetails.shortRange);
-    let longRange = parseInt(overviewDetails.longRange);
+    let caliber = parseInt(typeInformation.caliber);
+    let shortRange = parseInt(typeInformation.shortRange);
+    let longRange = parseInt(typeInformation.longRange);
 
     let caliberSplit, slugCaliber, shotCaliber;
     let shortRangeSplit, slugShortRange, shotShortRange;
@@ -68,19 +104,21 @@ function updateOverviewCard (masterworkSelection) {
 
     if (getSelectedGunTypeIndex() === GUN_TYPE_SHOTGUN) {
 
-        caliberSplit = overviewDetails.caliber.split('(');
+        caliberSplit = typeInformation.caliber.split('(');
         slugCaliber = parseInt(caliberSplit[0]);
         shotCaliber = parseInt(caliberSplit[1]);
 
-        shortRangeSplit = overviewDetails.shortRange.split('(');
+        shortRangeSplit = typeInformation.shortRange.split('(');
         slugShortRange = parseInt(shortRangeSplit[0]);
         shotShortRange = parseInt(shortRangeSplit[1]);
 
-        longRangeSplit = overviewDetails.longRange.split('(');
+        longRangeSplit = typeInformation.longRange.split('(');
         slugLongRange = parseInt(longRangeSplit[0]);
         shotLongRange = parseInt(longRangeSplit[1]);
 
     }
+
+    const masterworkSelection = getMasterworkSelection();
 
     // Needed for Gilded Lily
 
@@ -174,44 +212,78 @@ function updateOverviewCard (masterworkSelection) {
             keywordList = keywordList.filter(k => k !== '2-handed');
             break;
 
+        case 'Fatal Forecast':
+            critical = 19;
+            break;
+
         }
 
     }
 
+    return {
+        name: getName(),
+        misfire,
+        critical,
+        bulletCapacity,
+        durability,
+        keywordList,
+        attackBonus,
+        damageBonus,
+        weight: typeInformation.weight,
+        gunMake: getSelectedGunMakeName(),
+        gunType: getSelectedGunTypeName(),
+        caliber,
+        shortRange,
+        longRange,
+        slugCaliber,
+        shotCaliber,
+        slugShortRange,
+        slugLongRange,
+        shotShortRange,
+        shotLongRange
+    };
+
+}
+
+function updateOverviewCard () {
+
+    const overviewDetails = getOverview();
+
     if (getSelectedGunTypeIndex() === GUN_TYPE_SHOTGUN) {
 
-        overviewCaliberText.innerText = slugCaliber + ' (' + shotCaliber + ')';
-        overviewRangeText.innerText = slugShortRange + '/' + slugLongRange + ' (' + shotShortRange + '/' + shotLongRange + ')';
-        overviewDamageText.innerText = getCaliberDice(slugCaliber) + ' (' + getCaliberDice(shotCaliber) + ')';
+        overviewCaliberText.innerText = overviewDetails.slugCaliber + ' (' + overviewDetails.shotCaliber + ')';
+        overviewRangeText.innerText = overviewDetails.slugShortRange + '/' + overviewDetails.slugLongRange + ' (' + overviewDetails.shotShortRange + '/' + overviewDetails.shotLongRange + ')';
+        overviewDamageText.innerText = getCaliberDiceString(overviewDetails.slugCaliber) + ' (' + getCaliberDiceString(overviewDetails.shotCaliber) + ')';
 
     } else {
 
-        overviewCaliberText.innerText = caliber;
-        overviewRangeText.innerText = shortRange + '/' + longRange;
-        overviewDamageText.innerText = getCaliberDice(caliber);
+        overviewCaliberText.innerText = overviewDetails.caliber;
+        overviewRangeText.innerText = overviewDetails.shortRange + '/' + overviewDetails.longRange;
+        overviewDamageText.innerText = getCaliberDiceString(overviewDetails.caliber);
 
     }
 
     // Add values to card which are same between shotgun and others
 
-    if (damageBonus > 0) {
+    if (overviewDetails.damageBonus > 0) {
 
-        overviewDamageText.innerText += ' + ' + damageBonus;
+        overviewDamageText.innerText += ' + ' + overviewDetails.damageBonus;
 
-    } else if (damageBonus < 0) {
+    } else if (overviewDetails.damageBonus < 0) {
 
+        let damageBonus = overviewDetails.damageBonus;
         damageBonus *= -1;
         overviewDamageText.innerText += ' - ' + damageBonus;
 
     }
 
-    overviewNameText.innerText = getSelectedGunMakeName() + ' ' + getSelectedGunTypeName();
-    overviewMisfireText.innerText = misfire;
-    overviewCapacityText.innerText = bulletCapacity;
-    overviewDurabilityText.innerText = durability;
+    overviewNameText.innerText = overviewDetails.gunMake + ' ' + overviewDetails.gunType;
+    overviewMisfireText.innerText = overviewDetails.misfire;
+    overviewCapacityText.innerText = overviewDetails.bulletCapacity;
+    overviewDurabilityText.innerText = overviewDetails.durability;
     overviewWeightText.innerText = overviewDetails.weight;
-    overviewKeywordsText.innerText = keywordList.join(', ');
+    overviewKeywordsText.innerText = overviewDetails.keywordList.join(', ');
 
-    overviewAttackBonusText.innerText = '+' + attackBonus;
+    overviewAttackBonusText.innerText = '+' + overviewDetails.attackBonus;
 
 }
