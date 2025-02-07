@@ -150,7 +150,7 @@ function createWeaponJSON (isShotgun, isShot, gunImage) {
                 baseItem: 'handcrossbow'
             },
             weight: {
-                value: overview.weight,
+                value: isShotgun && isShot ? 0 : overview.weight,
                 units: 'lb'
             },
             price: {
