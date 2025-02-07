@@ -203,9 +203,9 @@ function createWeaponJSON (isShotgun, isShot, gunImage) {
 
 function generateFoundryVTTJSON () {
 
-    if (getSelectedGunTypeIndex() !== GUN_TYPE_SHOTGUN) {
+    const gunImage = gunImages[getRandomInt(gunImages.length)];
 
-        const gunImage = gunImages[getRandomInt(gunImages.length)];
+    if (getSelectedGunTypeIndex() !== GUN_TYPE_SHOTGUN) {
 
         const weaponData = createWeaponJSON(false, false, gunImage);
 
@@ -213,17 +213,8 @@ function generateFoundryVTTJSON () {
 
     } else {
 
-        let gunImageShot, gunImageSlug;
-
-        do {
-
-            gunImageShot = gunImages[getRandomInt(gunImages.length)];
-            gunImageSlug = gunImages[getRandomInt(gunImages.length)];
-
-        } while (gunImageShot === gunImageSlug);
-
-        const weaponDataShot = createWeaponJSON(true, true, gunImageShot);
-        const weaponDataSlug = createWeaponJSON(true, false, gunImageSlug);
+        const weaponDataShot = createWeaponJSON(true, true, gunImage);
+        const weaponDataSlug = createWeaponJSON(true, false, gunImage);
 
         return [JSON.stringify(weaponDataShot, null, 2), JSON.stringify(weaponDataSlug, null, 2)];
 
