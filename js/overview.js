@@ -51,26 +51,22 @@ function getDescriptionText () {
     const masterworkSelection = getMasterworkSelection();
     const overviewInformation = getOverview();
 
-    let descriptionText = '<b>' + getSelectedGunMakeName() + ' ' + getSelectedGunTypeName() + '</b><br>';
+    let descriptionText = '<p><strong>' + getSelectedGunMakeName() + ' ' + getSelectedGunTypeName() + '</strong></p>';
 
-    descriptionText += 'Caliber: ' + overviewInformation.caliber + '<br>';
-    descriptionText += 'Misfire: ' + overviewInformation.misfire + '<br>';
-    descriptionText += 'Keywords: ' + overviewInformation.keywordList.join(', ') + '<br>';
+    descriptionText += '<p><em>Range: ' + overviewInformation.shortRange + '/' + overviewInformation.longRange + ' ft</em></p>';
+    descriptionText += '<p><em>Capacity: ' + overviewInformation.bulletCapacity + '</em></p>';
+    descriptionText += '<p><em>Caliber: ' + overviewInformation.caliber + '</em></p>';
+    descriptionText += '<p><em>Misfire: ' + overviewInformation.misfire + '</em></p>';
+    descriptionText += '<p><em>Keywords: ' + overviewInformation.keywordList.join(', ') + '</em></p>';
 
     if (masterworkSelection.length > 0) {
 
-        descriptionText += '<br>Masterworks:<br>';
+        descriptionText += '<hr />';
 
         for (let i = 0; i < masterworkSelection.length; i++) {
 
-            descriptionText += '<i>' + masterworkSelection[i].name + '</i><br>';
-            descriptionText += masterworkSelection[i].description;
-
-            if (i < masterworkSelection.length - 1) {
-
-                descriptionText += '<br>';
-
-            }
+            descriptionText += '<p><i>' + masterworkSelection[i].name + '</i></p>';
+            descriptionText += '<p>' + masterworkSelection[i].description + '</p>';
 
         }
 

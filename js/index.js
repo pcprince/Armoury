@@ -118,44 +118,58 @@ function generateFoundryVTTJSON () {
         // TODO: Export a weapon from FOundry and compare the JSONs
 
         const [diceCount, diceType] = getCaliberDice(overview.caliber);
-        const critDiceCount = diceCount * 2;
 
         // Replace this with your actual data generation logic
         const weaponData = {
             name: overview.name,
             type: 'weapon',
-            data: {
+            system: {
                 description: {
                     value: getDescriptionText()
                 },
-                damage: {
-                    parts: [
-                        [`${diceCount}${diceType} + ${overview.damageBonus} + @abilities.dex.mod`, 'piercing']
-                    ]
+                type: {
+                    value: 'martialR',
+                    baseItem: 'handcrossbow'
                 },
+                uses: {
+                    max: overview.durability,
+                    spent: 0,
+                    recovery: []
+                },
+                proficient: 1,
                 range: {
                     value: overview.shortRange,
                     long: overview.longRange,
                     units: 'ft'
                 },
-                attackBonus: `${overview.attackBonus} + @prof + @abilities.dex.mod`,
-                attack: {
-                    parts: [
-                        ['1d20 + @abilities.dex.mod + @prof', '']
-                    ],
-                    critical: {
-                        threshold: overview.critical,
-                        damage: {
-                            parts: [
-                                [`${critDiceCount}${diceType} + ${overview.damageBonus} + @abilities.dex.mod`, 'piercing']
-                            ]
+                'activities': {
+                    dnd5eactivity000: {
+                        type: 'attack',
+                        _id: 'dnd5eactivity000',
+                        'attack': {
+                            'critical': {
+                                'threshold': overview.critical
+                            },
+                            'bonus': overview.attackBonus
+                        },
+                        'damage': {
+                            'critical': {
+                                'bonus': ''
+                            },
+                            'includeBase': true,
+                            'parts': []
                         }
-                    },
-                    fumble: {
-                        threshold: overview.misfire,
-                        effect: 'Miss'
                     }
-                }
+                },
+                damage: {
+                    base: {
+                        custom: {
+                            enabled: true,
+                            formula: `${diceCount}${diceType} + ${overview.damageBonus} + @abilities.dex.mod`
+                        }
+                    }
+                },
+                properties: overview.keywordList.includes('2-handed') ? ['two'] : []
             }
         };
 
@@ -177,14 +191,17 @@ function downloadJSON (content, fileName, contentType) {
     const a = document.createElement('a');
     const file = new Blob([content], {type: contentType});
     a.href = URL.createObjectURL(file);
-    a.download = fileName;
+    a.download = fileName.replace(/\s+/g, '-');
     a.click();
 
 }
 
 exportButton.addEventListener('click', () => {
 
+    const overview = getOverview();
+    const name = overview.name;
+
     const jsonData = generateFoundryVTTJSON();
-    downloadJSON(jsonData, 'weapon.json', 'application/json');
+    downloadJSON(jsonData, `${name}.json`, 'application/json');
 
 });
