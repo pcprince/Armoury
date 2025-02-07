@@ -271,7 +271,7 @@ const typeInformation = [
         'name': 'Shotgun',
         'caliber': '6(5)',
         'shortRange': '10(40)',
-        'longRange': '40(120)',
+        'longRange': '30(120)',
         'misfire': 3,
         'bulletCapacity': 2,
         'durability': 20,
