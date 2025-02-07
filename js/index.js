@@ -61,6 +61,29 @@ const makeNameComponents = [
     [['Ironclad', 'Risky', 'Lucky', 'Foolish', 'Unfortunate', 'Lady Luck\'s', 'Big Game'], ['Dragon', 'Claw', 'Tooth', 'Dice', 'Mishap', 'Mistake', 'Gambler']] // Ironcoil
 ];
 
+const gunImages = [
+    'gun-blunderbuss-bronze.webp',
+    'gun-blunderbuss-gold.webp',
+    'gun-blunderbuss-steel.webp',
+    'gun-blunderbuss-worn-brown.webp',
+    'gun-brown.webp',
+    'gun-double-barrel.webp',
+    'gun-green.webp',
+    'gun-pistol-brass.webp',
+    'gun-pistol-brown.webp',
+    'gun-pistol-flintlock-metal.webp',
+    'gun-pistol-flintlock-white.webp',
+    'gun-pistol-flintlock.webp',
+    'gun-pistol-wood.webp',
+    'gun-purple.webp',
+    'gun-red.webp',
+    'gun-topbarrel.webp',
+    'gun-wood.webp',
+    'gun-worn-gold.webp',
+    'gun-worn-steel.webp',
+    'rifle-bayonet.webp'
+];
+
 function generateRandomName (makeIndex) {
 
     const makeComponents = makeNameComponents[makeIndex];
@@ -105,7 +128,7 @@ randomButton.addEventListener('click', () => {
 
 });
 
-function createWeaponJSON (isShotgun, isShot) {
+function createWeaponJSON (isShotgun, isShot, gunImage) {
 
     const overview = getOverview(isShotgun && isShot);
 
@@ -117,6 +140,7 @@ function createWeaponJSON (isShotgun, isShot) {
     return {
         name,
         type: 'weapon',
+        img: 'icons/weapons/guns/' + gunImage,
         system: {
             description: {
                 value: getDescriptionText(isShotgun, isShot)
@@ -181,14 +205,25 @@ function generateFoundryVTTJSON () {
 
     if (getSelectedGunTypeIndex() !== GUN_TYPE_SHOTGUN) {
 
-        const weaponData = createWeaponJSON(false, false);
+        const gunImage = gunImages[getRandomInt(gunImages.length)];
+
+        const weaponData = createWeaponJSON(false, false, gunImage);
 
         return [JSON.stringify(weaponData, null, 2)];
 
     } else {
 
-        const weaponDataShot = createWeaponJSON(true, true);
-        const weaponDataSlug = createWeaponJSON(true, false);
+        let gunImageShot, gunImageSlug;
+
+        do {
+
+            gunImageShot = gunImages[getRandomInt(gunImages.length)];
+            gunImageSlug = gunImages[getRandomInt(gunImages.length)];
+
+        } while (gunImageShot === gunImageSlug);
+
+        const weaponDataShot = createWeaponJSON(true, true, gunImageShot);
+        const weaponDataSlug = createWeaponJSON(true, false, gunImageSlug);
 
         return [JSON.stringify(weaponDataShot, null, 2), JSON.stringify(weaponDataSlug, null, 2)];
 
