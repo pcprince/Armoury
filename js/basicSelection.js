@@ -268,7 +268,7 @@ const typeInformation = [
         'weight': '10 lb'
     },
     {
-        'name': 'Shotgun Slug (Shot)',
+        'name': 'Shotgun',
         'caliber': '6(5)',
         'shortRange': '10(40)',
         'longRange': '40(120)',

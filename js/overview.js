@@ -52,18 +52,23 @@ function addRow (descriptionText, label, value) {
 
 }
 
-function getDescriptionText () {
+function getDescriptionText (isShotgun, isShot) {
 
     const masterworkSelection = getMasterworkSelection();
-    const overviewInformation = getOverview();
+    const overviewInformation = getOverview(isShotgun && !isShot);
 
     let descriptionText = '<p><strong>' + getSelectedGunMakeName() + ' ' + getSelectedGunTypeName() + '</strong></p>';
 
     descriptionText += '<table><tbody>';
 
-    descriptionText = addRow(descriptionText, 'Range', overviewInformation.shortRange + '/' + overviewInformation.longRange + ' ft');
+    const shortRange = !isShotgun ? overviewInformation.shortRange : isShot ? overviewInformation.shotShortRange : overviewInformation.slugShortRange;
+    const longRange = !isShotgun ? overviewInformation.longRange : isShot ? overviewInformation.shotLongRange : overviewInformation.slugLongRange;
+    descriptionText = addRow(descriptionText, 'Range', shortRange + '/' + longRange + ' ft');
+
     descriptionText = addRow(descriptionText, 'Capacity', overviewInformation.bulletCapacity);
-    descriptionText = addRow(descriptionText, 'Caliber', overviewInformation.caliber);
+
+    const caliber = !isShotgun ? overviewInformation.caliber : isShot ? overviewInformation.shotCaliber : overviewInformation.slugCaliber;
+    descriptionText = addRow(descriptionText, 'Caliber', caliber);
 
     descriptionText = addRow(descriptionText, 'Critical range', overviewInformation.critical < 20 ? overviewInformation.critical + '-20' : '20');
 
@@ -91,7 +96,7 @@ function getDescriptionText () {
 
 }
 
-function getOverview () {
+function getOverview (removeSpread = false) {
 
     const typeInformation = getTypeInformation(getSelectedGunTypeIndex());
 
@@ -99,9 +104,18 @@ function getOverview () {
     let critical = 20;
     let bulletCapacity = parseInt(typeInformation.bulletCapacity);
     let durability = parseInt(typeInformation.durability);
-    let keywordList = typeInformation.keywords.split(', ');
     let attackBonus = 1;
     let damageBonus = 0;
+
+    let keywordList = typeInformation.keywords.split(', ');
+
+    // Shotguns only have spread when using shot
+
+    if (removeSpread) {
+
+        keywordList = keywordList.filter(k => k !== '(Spread)');
+
+    }
 
     // Shotguns have 2 values for caliber and range
 
@@ -258,7 +272,7 @@ function getOverview () {
 
 function updateOverviewCard () {
 
-    const overviewDetails = getOverview();
+    const overviewDetails = getOverview(false);
 
     if (getSelectedGunTypeIndex() === GUN_TYPE_SHOTGUN) {
 

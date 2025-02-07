@@ -3,7 +3,7 @@
  * November 2024
  *****************************************************************************/
 
-/* global enableNameInput, getSelectedGunMakeName, getMasterworksByMaker, getStandardisedPartsMasterworks, setMasterworkTotalPrice, showOverviewCard, updateOverviewCard, getCurrentKeywords, getRandomInt */
+/* global enableNameInput, getSelectedGunMakeName, getSelectedGunTypeName, getMasterworksByMaker, getStandardisedPartsMasterworks, setMasterworkTotalPrice, showOverviewCard, updateOverviewCard, getCurrentKeywords, getRandomInt */
 
 const selectMasterworksButton = document.getElementById('select-masterworks-button');
 
@@ -16,6 +16,8 @@ const masterworkSelectionContainer = document.getElementById('masterwork-selecti
 const standardisedPartsSearchContainer = document.getElementById('standardised-parts-search-container');
 const standardisedPartsSearchInput = document.getElementById('standardised-parts-search-input');
 const standardisedPartsContainer = document.getElementById('standardised-parts-container');
+
+const shotgunRow = document.getElementById('shotgun-row');
 
 let cards = [];
 let standardisedPartsCards = [];
@@ -713,6 +715,9 @@ function onAddButtonClick (i) {
 }
 
 function displayMasterworkUI () {
+
+    const gunType = getSelectedGunTypeName();
+    shotgunRow.style.display = gunType === 'Shotgun' ? '' : 'none';
 
     basicSelectionDiv.style.display = 'none';
     masterworkSelectionDiv.style.display = '';

@@ -107,25 +107,26 @@ randomButton.addEventListener('click', () => {
 
 function createWeaponJSON (isShotgun, isShot) {
 
-    const overview = getOverview();
+    const overview = getOverview(isShotgun && isShot);
 
     const [diceCount, diceType] = getCaliberDice(!isShotgun ? overview.caliber : isShot ? overview.shotCaliber : overview.slugCaliber);
 
+    let name = overview.name;
+    name += isShotgun ? isShot ? ' (Shot)' : ' (Slug)' : '';
+
     return {
-        name: overview.name,
+        name,
         type: 'weapon',
         system: {
             description: {
-                value: getDescriptionText()
+                value: getDescriptionText(isShotgun, isShot)
             },
             type: {
                 value: 'martialR',
                 baseItem: 'handcrossbow'
             },
             uses: {
-                max: overview.durability,
-                spent: 0,
-                recovery: []
+                max: isShotgun && isShot ? '' : overview.durability
             },
             proficient: 1,
             range: {
@@ -216,7 +217,7 @@ exportButton.addEventListener('click', () => {
 
         fileName += '.json';
 
-        downloadJSON(jsonData, fileName, 'application/json');
+        downloadJSON(jsonData[i], fileName, 'application/json');
 
     }
 
