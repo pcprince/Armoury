@@ -13,8 +13,6 @@ const exportButton = document.getElementById('export-button');
 
 const randomMasterworkCountSelect = document.getElementById('random-masterwork-count-select');
 
-// TODO: Exporting to Foundry JSON
-
 const genericAdjectives = [
     'Ol\'', 'Rusty', 'Shadowed', 'Greedy', 'Fiery', 'Lone', 'Savage', 'Silent', 'Steely', 'Grizzled', 'Midnight',
     'Roaring', 'Wicked', 'Fearless', 'Raging', 'Shattered', 'Relentless', 'Vengeful', 'Cold', 'Thunderous', 'Deadly',
@@ -107,80 +105,83 @@ randomButton.addEventListener('click', () => {
 
 });
 
+function createWeaponJSON (isShotgun, isShot) {
+
+    const overview = getOverview();
+
+    const [diceCount, diceType] = getCaliberDice(!isShotgun ? overview.caliber : isShot ? overview.shotCaliber : overview.slugCaliber);
+
+    return {
+        name: overview.name,
+        type: 'weapon',
+        system: {
+            description: {
+                value: getDescriptionText()
+            },
+            type: {
+                value: 'martialR',
+                baseItem: 'handcrossbow'
+            },
+            uses: {
+                max: overview.durability,
+                spent: 0,
+                recovery: []
+            },
+            proficient: 1,
+            range: {
+                value: !isShotgun ? overview.shortRange : isShot ? overview.shotShortRange : overview.slugShortRange,
+                long: !isShotgun ? overview.longRange : isShot ? overview.shotLongRange : overview.slugLongRange,
+                units: 'ft'
+            },
+            'activities': {
+                dnd5eactivity000: {
+                    type: 'attack',
+                    _id: 'dnd5eactivity000',
+                    'attack': {
+                        'critical': {
+                            'threshold': overview.critical
+                        },
+                        'bonus': overview.attackBonus
+                    },
+                    'damage': {
+                        'critical': {
+                            'bonus': ''
+                        },
+                        'includeBase': true,
+                        'parts': []
+                    }
+                }
+            },
+            damage: {
+                base: {
+                    custom: {
+                        enabled: true,
+                        formula: `${diceCount}${diceType} + ${overview.damageBonus} + @abilities.dex.mod`
+                    }
+                }
+            },
+            properties: overview.keywordList.includes('2-handed') ? ['two'] : []
+        }
+    };
+
+}
+
 /* Exporting to FoundryVTT */
 
 function generateFoundryVTTJSON () {
 
-    const overview = getOverview();
-
     if (getSelectedGunTypeIndex() !== GUN_TYPE_SHOTGUN) {
 
-        // TODO: Export a weapon from FOundry and compare the JSONs
-
-        const [diceCount, diceType] = getCaliberDice(overview.caliber);
-
-        // Replace this with your actual data generation logic
-        const weaponData = {
-            name: overview.name,
-            type: 'weapon',
-            system: {
-                description: {
-                    value: getDescriptionText()
-                },
-                type: {
-                    value: 'martialR',
-                    baseItem: 'handcrossbow'
-                },
-                uses: {
-                    max: overview.durability,
-                    spent: 0,
-                    recovery: []
-                },
-                proficient: 1,
-                range: {
-                    value: overview.shortRange,
-                    long: overview.longRange,
-                    units: 'ft'
-                },
-                'activities': {
-                    dnd5eactivity000: {
-                        type: 'attack',
-                        _id: 'dnd5eactivity000',
-                        'attack': {
-                            'critical': {
-                                'threshold': overview.critical
-                            },
-                            'bonus': overview.attackBonus
-                        },
-                        'damage': {
-                            'critical': {
-                                'bonus': ''
-                            },
-                            'includeBase': true,
-                            'parts': []
-                        }
-                    }
-                },
-                damage: {
-                    base: {
-                        custom: {
-                            enabled: true,
-                            formula: `${diceCount}${diceType} + ${overview.damageBonus} + @abilities.dex.mod`
-                        }
-                    }
-                },
-                properties: overview.keywordList.includes('2-handed') ? ['two'] : []
-            }
-        };
+        const weaponData = createWeaponJSON(false, false);
 
         return [JSON.stringify(weaponData, null, 2)];
 
     } else {
 
-        console.log('SHOTGUN');
-        // TODO: Add 2 weapon JSONs for shot and slug
+        const weaponDataShot = createWeaponJSON(true, true);
+        const weaponDataSlug = createWeaponJSON(true, false);
 
-        return [];
+        return [JSON.stringify(weaponDataShot, null, 2), JSON.stringify(weaponDataSlug, null, 2)];
 
     }
 
@@ -202,6 +203,21 @@ exportButton.addEventListener('click', () => {
     const name = overview.name;
 
     const jsonData = generateFoundryVTTJSON();
-    downloadJSON(jsonData, `${name}.json`, 'application/json');
+
+    for (let i = 0; i < jsonData.length; i++) {
+
+        let fileName = name;
+
+        if (jsonData.length > 1) {
+
+            fileName += i === 0 ? '-SHOT' : '-SLUG';
+
+        }
+
+        fileName += '.json';
+
+        downloadJSON(jsonData, fileName, 'application/json');
+
+    }
 
 });

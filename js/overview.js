@@ -46,6 +46,12 @@ function getCurrentKeywords () {
 
 }
 
+function addRow (descriptionText, label, value) {
+
+    return descriptionText + '<tr><td data-colwidth=\"100\">' + label + '</td><td data-colwidth=\"100\">' + value + '</td></tr>';
+
+}
+
 function getDescriptionText () {
 
     const masterworkSelection = getMasterworkSelection();
@@ -53,15 +59,24 @@ function getDescriptionText () {
 
     let descriptionText = '<p><strong>' + getSelectedGunMakeName() + ' ' + getSelectedGunTypeName() + '</strong></p>';
 
-    descriptionText += '<p><em>Range: ' + overviewInformation.shortRange + '/' + overviewInformation.longRange + ' ft</em></p>';
-    descriptionText += '<p><em>Capacity: ' + overviewInformation.bulletCapacity + '</em></p>';
-    descriptionText += '<p><em>Caliber: ' + overviewInformation.caliber + '</em></p>';
-    descriptionText += '<p><em>Misfire: ' + overviewInformation.misfire + '</em></p>';
+    descriptionText += '<table><tbody>';
+
+    descriptionText = addRow(descriptionText, 'Range', overviewInformation.shortRange + '/' + overviewInformation.longRange + ' ft');
+    descriptionText = addRow(descriptionText, 'Capacity', overviewInformation.bulletCapacity);
+    descriptionText = addRow(descriptionText, 'Caliber', overviewInformation.caliber);
+
+    descriptionText = addRow(descriptionText, 'Critical range', overviewInformation.critical < 20 ? overviewInformation.critical + '-20' : '20');
+
+    descriptionText = addRow(descriptionText, 'Misfire', overviewInformation.misfire === 1 ? '1' : '1-' + overviewInformation.misfire);
+
+    descriptionText += '</tbody></table>';
+
     descriptionText += '<p><em>Keywords: ' + overviewInformation.keywordList.join(', ') + '</em></p>';
 
     if (masterworkSelection.length > 0) {
 
-        descriptionText += '<hr />';
+        descriptionText += '<p></p>';
+        descriptionText += '<p><strong>Masterworks:</strong></p>';
 
         for (let i = 0; i < masterworkSelection.length; i++) {
 
