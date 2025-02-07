@@ -306,7 +306,7 @@ function updateOverviewCard () {
     overviewMisfireText.innerText = overviewDetails.misfire;
     overviewCapacityText.innerText = overviewDetails.bulletCapacity;
     overviewDurabilityText.innerText = overviewDetails.durability;
-    overviewWeightText.innerText = overviewDetails.weight;
+    overviewWeightText.innerText = overviewDetails.weight + ' lb';
     overviewKeywordsText.innerText = overviewDetails.keywordList.join(', ');
 
     overviewAttackBonusText.innerText = '+' + overviewDetails.attackBonus;

@@ -217,7 +217,7 @@ const typeInformation = [
         'durability': 20,
         'keywords': 'Accurate 1, Hipfire',
         'cost': 450,
-        'weight': '2.5 lb'
+        'weight': 2.5
     },
     {
         'name': 'Holdout Pistol',
@@ -229,7 +229,7 @@ const typeInformation = [
         'durability': 10,
         'keywords': 'Accurate 1, Light, Hipfire',
         'cost': 200,
-        'weight': '1 lb'
+        'weight': 1
     },
     {
         'name': 'Cavalry Pistol',
@@ -241,7 +241,7 @@ const typeInformation = [
         'durability': 20,
         'keywords': 'Accurate 1, Hipfire, Equestrian',
         'cost': 500,
-        'weight': '3 lb'
+        'weight': 3
     },
     {
         'name': 'Rifle',
@@ -253,7 +253,7 @@ const typeInformation = [
         'durability': 20,
         'keywords': 'Accurate 1, Steady, 2-handed',
         'cost': 900,
-        'weight': '12 lb'
+        'weight': 12
     },
     {
         'name': 'Carbine',
@@ -265,7 +265,7 @@ const typeInformation = [
         'durability': 20,
         'keywords': 'Accurate 1, Steady, Equestrian, 2-handed',
         'cost': 1000,
-        'weight': '10 lb'
+        'weight': 10
     },
     {
         'name': 'Shotgun',
@@ -277,7 +277,7 @@ const typeInformation = [
         'durability': 20,
         'keywords': 'Accurate 1, (Spread), 2-handed',
         'cost': 800,
-        'weight': '6.5 lb'
+        'weight': 6.5
     },
     {
         'name': 'Hunting Rifle',
@@ -289,7 +289,7 @@ const typeInformation = [
         'durability': 20,
         'keywords': 'Accurate 1, Steady, Bulky, 2-handed',
         'cost': 750,
-        'weight': '8 lb'
+        'weight': 8
     }
 ];
 
@@ -552,7 +552,7 @@ function updateTypeInformationCard () {
         typeMisfireText.innerText = misfire;
         typeCapacityText.innerText = bulletCapacity;
         typeDurabilityText.innerText = durability;
-        typeWeightText.innerText = typeDetails.weight;
+        typeWeightText.innerText = typeDetails.weight + ' lb';
         typeKeywordsText.innerText = typeDetails.keywords;
 
         typeAttackBonusText.innerText = '+1';
@@ -566,7 +566,7 @@ function updateTypeInformationCard () {
         typeMisfireText.innerText = typeDetails.misfire;
         typeCapacityText.innerText = typeDetails.bulletCapacity;
         typeDurabilityText.innerText = typeDetails.durability;
-        typeWeightText.innerText = typeDetails.weight;
+        typeWeightText.innerText = typeDetails.weight + ' lb';
         typeKeywordsText.innerText = typeDetails.keywords;
 
         typeAttackBonusText.innerText = '+1';

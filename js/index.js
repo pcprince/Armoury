@@ -3,7 +3,7 @@
  * November 2024
  *****************************************************************************/
 
-/* global disableNameInput, resetBasicSelection, resetMasterworkSelection, hideOverviewCard, generateRandomGun, displayMasterworkUI, pickRandomMasterworks, getRandomInt, setName, getOverview, getDescriptionText, getSelectedGunTypeIndex, GUN_TYPE_SHOTGUN, getCaliberDice, getCaliberDiceString */
+/* global disableNameInput, resetBasicSelection, resetMasterworkSelection, hideOverviewCard, generateRandomGun, displayMasterworkUI, pickRandomMasterworks, getRandomInt, setName, getOverview, getDescriptionText, getSelectedGunTypeIndex, GUN_TYPE_SHOTGUN, getCaliberDice, getCurrentPrice */
 /* global basicSelectionDiv, masterworkSelectionDiv */
 
 const resetButton = document.getElementById('reset-button');
@@ -124,6 +124,14 @@ function createWeaponJSON (isShotgun, isShot) {
             type: {
                 value: 'martialR',
                 baseItem: 'handcrossbow'
+            },
+            weight: {
+                value: overview.weight,
+                units: 'lb'
+            },
+            price: {
+                value: getCurrentPrice(),
+                denomination: 'gp'
             },
             uses: {
                 max: isShotgun && isShot ? '' : overview.durability
